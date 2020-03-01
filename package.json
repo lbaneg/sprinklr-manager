@@ -1,0 +1,79 @@
+{
+  "name": "sprinklr-template",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "./",
+  "main": "public/electron.js",
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
+    "react": "~16.12.0",
+    "react-dom": "~16.12.0",
+    "react-scripts": "3.4.0",
+    "react-router-dom": "~5.1.2",
+    "react-bootstrap": "~1.0.0-beta.16",
+    "bootstrap": "~4.4.1",
+    "react-icons": "~3.9.0",
+    "react-csv-reader": "~2.0.2",
+    "react-csv": "~2.0.1"
+  },
+  "devDependencies": {
+    "electron": "^8.0.1",
+    "electron-packager": "~14.2.1",
+    "electron-builder": "~22.3.2",
+    "concurrently": "~5.1.0",
+    "wait-on": "4.0.0"
+  },
+  "scripts": {
+    "start": "BROWSER=none env NODE_ENV=development concurrently \"react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
+    "build": "react-scripts build && electron-builder",
+    "react:start": "react-scripts start",
+    "react:build": "react-scripts build",
+    "react:test": "react-scripts test",
+    "react:eject": "react-scripts eject",
+    "electron": "electron .",
+    "start:react": "react-scripts start",
+    "start:electron": "electron .",
+    "build:electron": "mkdir build/src && cp main.jsx build",
+    "package": "electron-builder build --mac --win -c.extraMetadata.main=build/main.jsx --publish never",
+    "pac-electron": "electron-builder build --mac --win --publish never",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\""
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "author": "me",
+  "description": "electon app",
+  "build": {
+    "appId": "fbuploader",
+    "productName": "FB Uploader",
+    "copyright": "Copyright",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "NSIS"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  }
+}
