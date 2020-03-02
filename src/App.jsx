@@ -75,8 +75,10 @@ class App extends React.Component {
     const account = this.state.accountFactory.getAccount(campaign.facebookPage);
     const creatibv = new Creative(device,account,audiance,campaign);
     const props = [];
-    for(let prop of Object.values(creatibv)){
-          props.push(prop) ;
+    const labels = this.state.csvData[0];
+    for(let label of labels){
+      let fprop = creatibv[label.replace(/\s/g, "").toLowerCase()];
+      props.push(fprop);
     }
     return props;
   }
