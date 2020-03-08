@@ -73,11 +73,11 @@ class App extends React.Component {
   _setProps(campaign,type,audiance){//should be named createUploadTemplate
     let device = type === 'desktop'? new DesktopUpload(campaign.facebookPage): new MobileUpload(campaign.facebookPage);
     const account = this.state.accountFactory.getAccount(campaign.facebookPage);
-    const creatibv = new Creative(device,account,audiance,campaign);
+    const creativ = new Creative(device,account,audiance,campaign);
     const props = [];
     const labels = this.state.csvData[0];
     for(let label of labels){
-      let fprop = creatibv[label.replace(/\s/g, "").toLowerCase()];
+      let fprop = creativ[label.replace(/\s/g, "").toLowerCase()];
       props.push(fprop);
     }
     return props;

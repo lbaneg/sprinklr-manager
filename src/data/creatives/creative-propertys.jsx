@@ -16,7 +16,7 @@ const CREATIVEPROPS = ['AdAccountId', 'AdAccountName', 'InstagramAccountId', 'Ad
     'Ipadappid', 'Ipadappname', 'Ipadappurl', 'Iphoneappid', 'Iphoneappname', 'Iphoneurl', 'Webfallback', 'Weblink', 'Windowsappid', 'Windowsappname',
     'Windowsurl', 'AdPermalink', 'InstagramPreviewLink', 'PostPermalink', 'PreviewLink', 'Addresses', 'AdvancedCombinations',
     'AgeBrackets', 'AgeMax', 'AgeMin', 'AppInstallState', 'Behaviors', 'BroadCategoryClusters', 'BusinessLocation',
-    'Cities', 'CollegeEndYear', 'CollegeStartYear', 'Connections,Countries', 'CustomAudiences', 'Demographics',
+    'Cities', 'CollegeEndYear', 'CollegeStartYear', 'Connections','Countries', 'CustomAudiences', 'Demographics',
     'DynamicTravelAudiences', 'EducationSchools', 'EducationStatus', 'ElectoralDistricts', 'EthnicAffinity', 'ExcludedAddresses',
     'ExcludedCities', 'ExcludedConnections', 'ExcludedCountries', 'ExcludedCustomAudiences', 'ExcludedElectoralDistricts',
     'ExcludedGeoMarkets', 'ExcludedGlobalRegions', 'ExcludedPublisherCategories', 'ExcludedPublisherIds',

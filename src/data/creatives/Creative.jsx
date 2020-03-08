@@ -55,10 +55,18 @@ class Creative{
         this.dcmenabled = 'false';
         this.dcmsetviewtags	='false'
         this.multisharedendcardincluded ='false';
-        this.adsetdeliverylocation = 'location';
         this.campaignbuyingtype ='Auction';
         this.postapproval ='FALSE';
         this.useaccelerateddelivery = 'Yes';
+        this.dcmalphaenabled = 'FALSE';
+        this['adset:adbu'] = `${campaign.facebookPage}`;
+        this['paidinitiative:ftag_new'] = `${account.dSKFtag.split('=')[1]}`;
+        this.targetingoptimization = `${device.targetingOptimization}`;
+        this.dcmalphaenabled = `${device.dcmAlphaEnabled}`;
+        this['paidinitiative:addeliverylocation'] = `${device.paidInitiativeADDeliveryLocation}`;
+        this['adset:deliverylocation'] = `${device.adSetDeliveryLocation}`;
+        this.linkdescription = `${campaign.description}`;
+        this.title = `${campaign.headline}`;
     }
 }
 export default Creative;

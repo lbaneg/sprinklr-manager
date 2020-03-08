@@ -15,22 +15,6 @@ class Account {
         this.notes = arguments[11];
     }
 }
-// class Account {
-//     constructor(facebookPageUniqueLookup, adAccountId, adAccountName, displayLink, relatedPage, dSKFtag, mOBFtag,
-//         adSetADBU, paidInitiativeADInitiative, excludedConnections, excludedCountries, notes) {
-//         this.facebookPageUniqueLookup = facebookPageUniqueLookup;
-//         this.adAccountId = adAccountId;
-//         this.adAccountName = adAccountName;
-//         this.displayLink = displayLink;
-//         this.relatedPage = relatedPage;
-//         this.dSKFtag = dSKFtag;
-//         this.mOBFtag = mOBFtag;
-//         this.adSetADBU = adSetADBU;
-//         this.paidInitiativeADInitiative = paidInitiativeADInitiative;
-//         this.excludedConnections = excludedConnections;
-//         this.excludedCountries = excludedCountries;
-//         this.notes = notes;
-//     }
-// }
+
 
 export default Account;

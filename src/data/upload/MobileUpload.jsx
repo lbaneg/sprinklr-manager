@@ -1,23 +1,19 @@
-import Upload from "./Upload";
-import {BIDS} from './bids';
+import Upload from './Upload';
+import {MOBILEVALUES} from './upload-data';
+import {BIDS} from './upload-data';
 class MobileUpload extends Upload{
-    constructor(campaignstr){
+    constructor(campaignstr) {
+        super();
         const bids = new Map(BIDS);
-        const camp = bids.get(campaignstr);
-        const startingBid = camp? camp.mobile.startingBid:'';
-        const campaignBudget = camp? camp.mobile.campaignBudget:'';
-        super('MOB_','','Yes','','','','','','','','','','','','','Active','Active',
-        'Active','','','','Traffic','Yes','Mobile','Feeds;Right Column','Facebook,Audience Network,Messenger',
-        '','2/18/20 0:00','','','','','','','','','','',`[{"eventType":"CLICK_THROUGH""windowDays":1}]`,
-        `${startingBid}`||'','LOWEST_COST_WITH_BID_CAP','No',`${campaignBudget}`|| '','','ad_set','','','IMPRESSIONS','LINK_CLICKS','','','','','','',
-        'LEARN_MORE','','', '','No','','','','','','','','','','','','','','','','','','','','','','','FALSE','',
-        '','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','',
-        '','','','','','','United States','','','','','','','','','','','','','','','',
-        'tragedy_and_conflict,mature_audiences,gambling,debated_social_issues,dating',
-        '23842800342310509:AD Publisher Block List','','','','','','','','','','','','','','','','','','','','',
-        'home,recent','','','','','','','','','','','expansion_all','','','','','','','','','','','','','','','',
-        'false','false','false','false','','','','','','Mobile','','','','','','Facebook Mobile','','','','','','','Auction',
-        '','','','FALSE','','','','Yes');
+        for(let [key,value] of Object.entries(MOBILEVALUES) ){
+            this[key] = value;
+        }
+        if(bids.has(campaignstr)){
+            const camp = bids.get(campaignstr);
+            this.bidAmount = camp.desktop.startingBid;
+            this.campaignBidStrategy = camp.desktop.campaignBudget;
+        }
+   
     }
 }
 export default MobileUpload;
