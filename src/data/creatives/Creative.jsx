@@ -58,7 +58,7 @@ class Creative{
         this.campaignbuyingtype ='Auction';
         this.postapproval ='FALSE';
         this.useaccelerateddelivery = 'Yes';
-        this.dcmalphaenabled = 'FALSE';
+        this.dcmalphaenabled = 'false';
         this['adset:adbu'] = `${campaign.facebookPage}`;
         this['paidinitiative:ftag_new'] = `${account.dSKFtag.split('=')[1]}`;
         this.targetingoptimization = `${device.targetingOptimization}`;
@@ -67,6 +67,8 @@ class Creative{
         this['adset:deliverylocation'] = `${device.adSetDeliveryLocation}`;
         this.linkdescription = `${campaign.description}`;
         this.title = `${campaign.headline}`;
+        this.locationtypes =  `${device.locationTypes}`;
+        this.excludedconnections = `${device.excludedConnections}`;
     }
 }
 export default Creative;

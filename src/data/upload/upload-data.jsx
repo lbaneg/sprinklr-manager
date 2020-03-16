@@ -298,7 +298,7 @@ const MOBILEVALUES = {
     campaignStatus:'Active',
     campaignObjective:'Traffic',
     enableCampaignBudgetOptimization:'Yes',
-    devicePlatforms:'Mobbile',
+    devicePlatforms:'Mobile',
     platformPositions:'Inbox;Instant Articles;Native, Banner and Interstitial;Feeds',
     publisherPlatforms:'Facebook,Audience Network,Messenger',
     adSetTimeStart:'3/7/20 0:00',

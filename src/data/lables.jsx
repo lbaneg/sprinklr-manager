@@ -8,7 +8,7 @@ const EXPORTLABEL = ['Ad Account Id','Ad Account Name','Instagram Account Id','A
                                 'Ad Schedule Start Time','Sprinklr Ad Schedule','Ad Set Daily Budget','Ad Set Lifetime Budget','Attribution Spec','Bid Amount',
                                 'Campaign Bid Strategy','Enable Ad Sets Budget Rebalancing','Paid Initiative Daily Budget','Paid Initiative Lifetime Budget',
                                 'Pricing Level','Sprinklr Budget Id','Use Average Bid','Billing Event','Optimization Goal','Link Object Id',
-                                'Related Page','Story Id','App Link Destination','Application ID','Body',
+                                'Related Page','Story Id','App Link Destination','Application ID','Body','Call to Action',
                                 'Call To Action Link','Creative Type','Display Link','Display as single Image','Don`t Publish Duplicate Post','Duration','Dynamic Ad Voice','Dynamic Creative Id','Event Id',
                                 'Image','Image Crops','Image Hash','Image Url','Lead Form ID','Link','Link Description','Messenger Sponsored Message','Mobile App Deep Link','Object Store Url','Offer Id','Page Welcome Message','Phone Number','Retailer IDs',
                                 'Sprinklr Draft Post Id','Title','Transition','URL Tags','Use Page as Actor','Video Captions','Video ID','Video SAM Id','Video Thumbnail URL',

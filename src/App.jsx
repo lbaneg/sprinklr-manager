@@ -77,8 +77,17 @@ class App extends React.Component {
     const props = [];
     const labels = this.state.csvData[0];
     for(let label of labels){
-      let fprop = creativ[label.replace(/\s/g, "").toLowerCase()];
-      props.push(fprop);
+      let fprop = creativ[label.replace(/\s/g, "").replace('`','').toLowerCase()];
+      switch(label){
+        case 'Dcm Alpha Enabled':
+        case 'Dcm Enabled':
+        case 'Dcm Set View Tags':
+        case 'Multi Shared End Card Included':  
+          props.push(`'${fprop}'`);
+          break;
+        default:
+          props.push(`${fprop}`);
+      }
     }
     return props;
   }

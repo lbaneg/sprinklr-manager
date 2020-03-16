@@ -38,7 +38,7 @@ const ACCOUNTS = [
     ['CNET',
         [
             'CNET',
-            'ac: 10152556302918997',
+            'ac:10152556302918997',
             'CNET Audience Development V1',
             'CNET.com',
             'o:7155422274',
@@ -53,7 +53,8 @@ const ACCOUNTS = [
     ],
     ['ComicBook',
         [
-            'ComicBook,ac: 1102941909874497',
+            'ComicBook',
+            'ac:1102941909874497',
             'ComicBook Audience Development',
             'ComicBook.com',
             'o:39795225543',
@@ -110,7 +111,7 @@ const ACCOUNTS = [
     ['PopCulture',
         [
             'PopCulture',
-            'ac: 283794938923232',
+            'ac:283794938923232',
             'PopCulture Audience Development',
             'PopCulture.com',
             'o:225096980839858',
@@ -122,7 +123,7 @@ const ACCOUNTS = [
     ['TVGuide',
         [
             'TVGuide',
-            'ac: 295140667330998',
+            'ac:295140667330998',
             'TVGuide Audience Development',
             'TVGuide.com',
             'o:80415657792?ftag=ACQ568ec48?ftag=ACQ58c84e2',
@@ -132,7 +133,7 @@ const ACCOUNTS = [
     ['The Guide',
         [
             'The Guide',
-            'ac: 10155283134198997',
+            'ac:10155283134198997',
             'Guide Aud Dev v2',
             'Guide.com',
             'o:1800547170168104',
