@@ -17,6 +17,7 @@ import Creative from './data/creatives/Creative';
 import AccountFactory from './data/account/AccountFactory';
 import {AUDIENCETARGETING} from './data/audience-targeting';
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -30,18 +31,36 @@ class App extends React.Component {
       filename:'',
       uploadComplet:false,
       audianceMap: new Map(AUDIENCETARGETING),
-      accountFactory: new AccountFactory()
+      accountFactory: new AccountFactory(),
+      uploadType:{
+        'MOBILE':'mobile',
+        'DESKTOP':'desktop'
+      }
     }
+    this.test = this.test.bind(this);
+    this._loadFileListener = this._loadFileListener.bind(this)
   }
   componentDidMount() {
-
-
+    window.ipcRenderer.on('getAll-reply', this._loadFileListener)
+  }
+  componentWillUnmount() {
+    window.ipcRenderer.removeListener('getAll-reply', this._loadFileListener)
+  }
+  _loadFileListener(event){
+    console.log('Runaujn!!!'+ event);
+  }
+  test(){
+    const res = window.ipcRenderer.send('getAll',{name:'hello!'});
+    for(let r in res){
+      console.log(`${r}`);
+    }
+    
   }
   onFileLoaded(data) {
     this.setState({ inputFile: data });
     this._createCampaigns(data);
-    this._createUpload('desktop');
-    this._createUpload('mobile');
+    this._createUpload(this.state.uploadType.DESKTOP);
+    this._createUpload(this.state.uploadType.MOBILE);
     this._nameFile();
     this.setState({uploadComplet:true})
   }
@@ -118,6 +137,9 @@ class App extends React.Component {
                   </Row>
                   <Row>
                     <Col xs={12}>
+                    <button onClick={this.test}>
+                      Test
+                    </button>
                       <div className="App-file-uploader">
                         <CSVReader onFileLoaded={(data) => this.onFileLoaded(data)} />
                       </div>

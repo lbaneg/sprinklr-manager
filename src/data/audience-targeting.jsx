@@ -135,7 +135,7 @@ const AUDIENCETARGETING = [
     ['Gamespot',
         [
             'INT - Reading: Comics',
-            ' INT - Movies',
+            'INT - Movies',
             'DEMO 16 +',
             'INT - Comic Con',
             'INT - Games',
@@ -192,15 +192,18 @@ const AUDIENCETARGETING = [
         ]
     ],
     ['Inside Edition',
-        'INT - TV News',
-        'DEMO 16+',
-        'INT - Royal Family',
-        'INT - Celebrity/Hollywood Gossip',
-        'INT - Dogs',
-        'INT - Pets',
-        'INT - TV Sitcoms',
-        'INT - Fashion And Red Carpet/Award Shows F 18-44',
-        'INT - Reading: Newspapers'
+        [
+            'INT - TV News',
+            'DEMO 16+',
+            'INT - Royal Family',
+            'INT - Celebrity/Hollywood Gossip',
+            'INT - Dogs',
+            'INT - Pets',
+            'INT - TV Sitcoms',
+            'INT - Fashion And Red Carpet/Award Shows F 18-44',
+            'INT - Reading: Newspapers'
+        ]
+       
     ]
 ]
 

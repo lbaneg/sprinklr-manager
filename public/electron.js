@@ -1,6 +1,16 @@
 
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { Client } = require('pg');
+const {ipcMain} = require('electron')
+
+this.client = new Client({
+    host: 'clickfactorydev.ccavhumaz3qp.us-west-1.rds.amazonaws.com',
+    port: 5334,
+    user: 'clickfactory',
+    password: 'click2018',
+  })
+this.client.connect();
 //const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -9,12 +19,19 @@ const path = require('path');
 let mainWindow;
 function createWindow () { 
     const startUrl = process.env.NODE_ENV === 'development'? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
-    mainWindow = new BrowserWindow({ width: 630, height: 600, title:'Kelly`s Application'});
+    mainWindow = new BrowserWindow({
+         width: 630, height: 600, title:'Kelly`s Application',
+         webPreferences: {
+                nodeIntegration: true,
+                preload: __dirname + '/preload.js'
+            }
+        });
     mainWindow.loadURL(startUrl);
     mainWindow.on('closed', function () {
       mainWindow = null;
     });
-    //mainWindow.webContents.openDevTools();
+ 
+    mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -41,3 +58,12 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('getAll',(event,arg)=>{
+    console.log(arg);
+    // const temp = this.client.query('SELECT* FROM clickfactorydev.answersite_bing_spend'); 
+    // this.client.end();
+    //console.log(temp);
+    // Event emitter for sending asynchronous messages
+    event.sender.send('getAll-reply', 'async pong');
+})
