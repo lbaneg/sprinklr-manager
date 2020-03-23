@@ -9,16 +9,16 @@ import logo from './file_upload.png';
 import {IoIosCloudDownload} from 'react-icons/io';
 import CSVReader from 'react-csv-reader';
 import { CSVLink } from "react-csv";
-import {EXPORTLABEL} from './data/lables';
-import Campaign from './data/campaign/Campaign';
-import DesktopUpload from './data/upload/DesktopUpload';
-import MobileUpload from './data/upload/MobileUpload';
-import Creative from './data/creatives/Creative';
-import AccountFactory from './data/account/AccountFactory';
-import {AUDIENCETARGETING} from './data/audience-targeting';
+import {EXPORTLABEL} from '../data/lables';
+import Campaign from '../data/campaign/Campaign';
+import DesktopUpload from '../data/upload/DesktopUpload';
+import MobileUpload from '../data/upload/MobileUpload';
+import Creative from '../data/creatives/Creative';
+import AccountFactory from '../data/account/AccountFactory';
+import {AUDIENCETARGETING} from '../data/audience-targeting';
 
 
-class App extends React.Component {
+class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,21 +97,16 @@ class App extends React.Component {
     const labels = this.state.csvData[0];
     for(let label of labels){
       let fprop = creativ[label.replace(/\s/g, "").replace('`','').toLowerCase()];
-      if(fprop){
-        switch(label){
-          case 'Dcm Alpha Enabled':
-          case 'Dcm Enabled':
-          case 'Dcm Set View Tags':
-          case 'Multi Shared End Card Included': 
-            props.push(`'${fprop}'`);
-            break;
-          default:
-            props.push(`${fprop}`);
-        }
-      }else{
-        props.push('');
+      switch(label){
+        case 'Dcm Alpha Enabled':
+        case 'Dcm Enabled':
+        case 'Dcm Set View Tags':
+        case 'Multi Shared End Card Included':  
+          props.push(`'${fprop}'`);
+          break;
+        default:
+          props.push(`${fprop}`);
       }
-
     }
     return props;
   }
@@ -142,7 +137,9 @@ class App extends React.Component {
                   </Row>
                   <Row>
                     <Col xs={12}>
-                  
+                    <button onClick={this.test}>
+                      Test
+                    </button>
                       <div className="App-file-uploader">
                         <CSVReader onFileLoaded={(data) => this.onFileLoaded(data)} />
                       </div>
@@ -172,4 +169,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Home;
