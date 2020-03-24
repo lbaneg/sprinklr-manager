@@ -302,7 +302,7 @@ const MOBILEVALUES = {
     platformPositions:'Inbox;Instant Articles;Native, Banner and Interstitial;Feeds',
     publisherPlatforms:'Facebook,Audience Network,Messenger',
     adSetTimeStart:'3/7/20 0:00',
-    attributionSpec:'[{"eventType":"CLICK_THROUGH","windowDays":1}]',
+    attributionSpec:'[{""eventType"":""CLICK_THROUGH"",""windowDays"":1}]',
     campaignBidStrategy: 'LOWEST_COST_WITH_BID_CAP',
     enableAdSetsBudgetRebalancing:'No',
     pricingLevel:'ad_set',

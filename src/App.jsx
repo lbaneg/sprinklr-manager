@@ -1,169 +1,62 @@
 import React from 'react';
+import './App.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import './App.css';
-import logo from './file_upload.png';
-// import Button from 'react-bootstrap/Button';
-// import { IoIosCloudUpload } from 'react-icons/io';
-import {IoIosCloudDownload} from 'react-icons/io';
-import CSVReader from 'react-csv-reader';
-import { CSVLink } from "react-csv";
-import {EXPORTLABEL} from './data/lables';
-import Campaign from './data/campaign/Campaign';
-import DesktopUpload from './data/upload/DesktopUpload';
-import MobileUpload from './data/upload/MobileUpload';
-import Creative from './data/creatives/Creative';
-import AccountFactory from './data/account/AccountFactory';
-import {AUDIENCETARGETING} from './data/audience-targeting';
-
+import Upload from './components/upload/Upload';
+import Home from './components/home/Home';
+import Sidebar from './components/sidebar/Sidebar';
+import Bids from './components/bids/Bids';
+import Audience from './components/audience/Audience';
+import { Route, withRouter } from 'react-router-dom';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputFile: {},
-      exportFile: {},
-      campaigns: [],
-      csvData: [
-        EXPORTLABEL
-      ],
-      filename:'',
-      uploadComplet:false,
-      audianceMap: new Map(AUDIENCETARGETING),
-      accountFactory: new AccountFactory(),
-      uploadType:{
-        'MOBILE':'mobile',
-        'DESKTOP':'desktop'
-      }
+      activeTab:0
     }
-    this.test = this.test.bind(this);
-    this._loadFileListener = this._loadFileListener.bind(this)
+
+    this.onTabClick = this.onTabClick.bind(this); 
   }
-  componentDidMount() {
-    window.ipcRenderer.on('getAll-reply', this._loadFileListener)
-  }
-  componentWillUnmount() {
-    window.ipcRenderer.removeListener('getAll-reply', this._loadFileListener)
-  }
-  _loadFileListener(event){
-    console.log('Runaujn!!!'+ event);
-  }
-  test(){
-    const res = window.ipcRenderer.send('getAll',{name:'hello!'});
-    for(let r in res){
-      console.log(`${r}`);
+  onTabClick(event){
+   
+    const id = Number(event.currentTarget.id);
+    switch(id){
+      case 0:
+        this.props.history.push(`/`);
+        break;
+      case 1:
+       this.props.history.push('/upload');
+      break;
+      case 2:
+        this.props.history.push('/bids');
+        break;
+      case 3:
+        this.props.history.push('/audience');
+        break;    
+      default:
+        //history.push(`/`);
     }
     
-  }
-  onFileLoaded(data) {
-    this.setState({ inputFile: data });
-    this._createCampaigns(data);
-    this._createUpload(this.state.uploadType.DESKTOP);
-    this._createUpload(this.state.uploadType.MOBILE);
-    this._nameFile();
-    this.setState({uploadComplet:true})
-  }
-  _nameFile(){
-    let campaign = this.state.campaigns[0];
-    this.setState({filename:`FB Upload File - ${campaign.facebookPage} - ${campaign.headline} - ${campaign.dateAdded}`})
-  }
-  _createCampaigns(data){
-    let campaigns = [];
-    for (let row = 1; row < data.length;row++) {
-      if(data[row][0] !== '') campaigns.push(new Campaign(...data[row])); //data[row][0] checks that the elem has a line number property.
-    }
-    this.setState({campaigns:campaigns})
-  }
-  _createUpload(type){
-    let campaigns = this.state.campaigns;
-    let map = this.state.audianceMap;
-    for (let campaign of campaigns) {
-      const audiance = map.get(campaign.facebookPage);
-      for(let i =0; i < audiance.length;i++){
-         let props = this._setProps(campaign,type,audiance[i]);
-         this.setState(state => {
-          const list = state.csvData.push(props);
-          return {list};
-        });
-      }
-    }
-  }
-  _setProps(campaign,type,audiance){//should be named createUploadTemplate
-    let device = type === 'desktop'? new DesktopUpload(campaign.facebookPage): new MobileUpload(campaign.facebookPage);
-    const account = this.state.accountFactory.getAccount(campaign.facebookPage);
-    const creativ = new Creative(device,account,audiance,campaign);
-    const props = [];
-    const labels = this.state.csvData[0];
-    for(let label of labels){
-      let fprop = creativ[label.replace(/\s/g, "").replace('`','').toLowerCase()];
-      if(fprop){
-        switch(label){
-          case 'Dcm Alpha Enabled':
-          case 'Dcm Enabled':
-          case 'Dcm Set View Tags':
-          case 'Multi Shared End Card Included': 
-            props.push(`'${fprop}'`);
-            break;
-          default:
-            props.push(`${fprop}`);
-        }
-      }else{
-        props.push('');
-      }
-
-    }
-    return props;
-  }
- 
-  _createExportCSV(data) {
-    // let campaigns = this.state.campaigns;
-    // let map = this.state.audianceMap;
-    // for (let campaign of campaigns) {
-    //   const audiance = map.get(campaign.facebookPage);
-
-     
-    // }
+    this.setState({activeTab:id})
   }
 
   render() {
-    const csvData = this.state.csvData;
     return (
-      <section className="page" id="home-page">
-        <Container fluid={true} >
+      <section id="app">
+        <Container fluid>
           <Row>
-            <Col xs={12}>
-              <div className="App-upload-container">
-                <Container fluid={false} >
-                  <Row>
-                    <Col xs={12}>
-                      <img src={logo} className="App-upload-img" alt="logo" />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12}>
-                  
-                      <div className="App-file-uploader">
-                        <CSVReader onFileLoaded={(data) => this.onFileLoaded(data)} />
-                      </div>
-                      {/*
-                      <input type="file" id="myFile" onChange={(e) => this.handleChange(e.target.files)} /> Select Candy Tracker File
-                      <Button variant="primary"> <IoIosCloudUpload /> Select Candy Tracker File</Button>
-                      */}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12}>
-                      {
-                        this.state.uploadComplet? <CSVLink data={csvData} filename={`${this.state.filename}.csv`}
-                        className="btn btn-primary"
-                        target=""> <IoIosCloudDownload/> Download File</CSVLink>:''
-                      }
-                      
-                    </Col>
-                  </Row>
-                </Container>
-              </div>
+            <Col xs = {1} md ={1} lg = {1}>
+              <Sidebar onTabClick = {this.onTabClick} activeTab = {this.state.activeTab} />
+            </Col>
+            <Col  xs = {11} md = {11} lg = {11}>
+              
+                        <Route exact={true}  path='/' component={Home}/>
+                        <Route exact={true}  path='/upload' component={Upload}/>
+                        <Route exact={true}  path='/bids' component={Bids}/>
+                        <Route exact={true}  path='/audience' component={Audience}/>    
+              
             </Col>
           </Row>
         </Container>
@@ -172,4 +65,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);
