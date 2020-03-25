@@ -20,3 +20,5 @@ code {
 .clickable{
   cursor: pointer;
 }
+table.tfonts tr td { font-size: 10px; }
+table.tfonts tr th { font-size: 10px; }

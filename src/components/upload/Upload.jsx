@@ -2,13 +2,15 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
+
 import './Upload.css';
 // import Button from 'react-bootstrap/Button';
 // import { IoIosCloudUpload } from 'react-icons/io';
-import {IoIosCloudDownload, IoIosCloseCircleOutline} from 'react-icons/io';
+import {IoIosCloudDownload} from 'react-icons/io';
 import CSVReader from 'react-csv-reader';
 import { CSVLink } from "react-csv";
-import {EXPORTLABEL} from '../../data/lables';
+import {HEADERVALUES} from '../../data/header-values';
 import Campaign from '../../data/campaign/Campaign';
 import DesktopUpload from '../../data/upload/DesktopUpload';
 import MobileUpload from '../../data/upload/MobileUpload';
@@ -24,9 +26,8 @@ class Upload extends React.Component {
       inputFile: {},
       exportFile: {},
       campaigns: [],
-      csvData: [
-        EXPORTLABEL
-      ],
+      csvData: [HEADERVALUES],
+      error: false,
       filename:'',
       uploadComplet:false,
       audianceMap: new Map(AUDIENCETARGETING),
@@ -50,24 +51,19 @@ class Upload extends React.Component {
     console.log('Runaujn!!!'+ event);
   }
   test(){
+  //<button onClick={this.test}>
+  //Test
+  //</button>
     const res = window.ipcRenderer.send('getAll',{name:'hello!'});
     for(let r in res){
       console.log(`${r}`);
     }
-    
   }
-  // onClick(e){
-  //   const click = e.curentTarget.id
-  //   switch(click){
-  //     case 'remove-file':
-  //       this.
-  //       break;
-  //     default:
-
-  //   }
-  // }
+  
   onRemoveFile(event){
-    
+    document.querySelector('.csv-input').value = '';
+    this.setState({inputFile:{}});
+    this.setState({uploadComplet:false});
   }
   onFileLoaded(data) {
     this.setState({ inputFile: data });
@@ -75,7 +71,7 @@ class Upload extends React.Component {
     this._createUpload(this.state.uploadType.DESKTOP);
     this._createUpload(this.state.uploadType.MOBILE);
     this._nameFile();
-    this.setState({uploadComplet:true})
+    this.setState({uploadComplet:true});
   }
   _nameFile(){
     let campaign = this.state.campaigns[0];
@@ -123,63 +119,42 @@ class Upload extends React.Component {
     }
     return props;
   }
- 
-  _createExportCSV(data) {
-    // let campaigns = this.state.campaigns;
-    // let map = this.state.audianceMap;
-    // for (let campaign of campaigns) {
-    //   const audiance = map.get(campaign.facebookPage);
-
-     
-    // }
-  }
 
   render() {
     const csvData = this.state.csvData;
+    const errorMessage = 'Format Error! First row in file must match: LINE NUMBER,	DATE ADDED,	FACEBOOK PAGE,	HEADLINE,	DESCRIPTION (DEK)	BODY -  BLURB,	LIVE URL,	FACEBOOK IMAGE - 1200 X 627';
     return (
       <section className="page" id="upload-page">
         <Container fluid={true} >
           <Row>
+            <Col xs={12} md={12} lg={12}>
               <h1>Upload</h1>
+              <hr/>
+            </Col>
           </Row>
           <Row>
-            <Col xs={12}>
-              <div className="App-upload-container">
-                <Container fluid={false} >
-                  <Row>
-                    <Col xs={12}>
-                      
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12}>
-                    <button onClick={this.test}>
-                      Test
-                    </button>
-                      <div className="App-file-uploader">
-                        <CSVReader onFileLoaded={(data) => this.onFileLoaded(data)} />
-                        {
-                          this.state.uploadComplet?<div className="clickable" id="remove-file" onClick={this.onRemoveFile}> <IoIosCloseCircleOutline/> </div>:''  
-                        }
-                      </div>
-                      {/*
-                      <input type="file" id="myFile" onChange={(e) => this.handleChange(e.target.files)} /> Select Candy Tracker File
-                      <Button variant="primary"> <IoIosCloudUpload /> Select Candy Tracker File</Button>
-                      */}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12}>
-                      {
-                        this.state.uploadComplet? <CSVLink data={csvData} filename={`${this.state.filename}.csv`}
-                        className="btn btn-primary"
-                        target=""> <IoIosCloudDownload/> Download File</CSVLink>:''
-                      }
-                      
-                    </Col>
-                  </Row>
-                </Container>
-              </div>
+            <Col xs={12} md={12} lg ={12}>
+              {
+                 this.state.error? <Alert variant={'danger'}>{errorMessage}</Alert>:''  
+              }
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6} md={6} lg={6}>
+                <CSVReader onFileLoaded={(data) => this.onFileLoaded(data)} ref={this.csvRef} />                       
+              
+              {/*
+              <input type="file" id="myFile" onChange={(e) => this.handleChange(e.target.files)} /> Select Candy Tracker File
+              <Button variant="primary"> <IoIosCloudUpload /> Select Candy Tracker File</Button>
+              this.state.uploadComplet?<div className="clickable" id="remove-file" onClick={this.onRemoveFile}> <IoIosCloseCircleOutline/> </div>:''  
+              */}
+            </Col>
+            <Col xs={6} md={6} lg={6}>
+              {
+                this.state.uploadComplet? <CSVLink data={csvData} filename={`${this.state.filename}.csv`}
+                className="btn btn-primary"
+                target=""> <IoIosCloudDownload/> Download File</CSVLink>:''
+              }
             </Col>
           </Row>
         </Container>

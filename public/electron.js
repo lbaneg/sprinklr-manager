@@ -3,16 +3,15 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const { Client } = require('pg');
 const {ipcMain} = require('electron')
+require('dotenv').config();
 
-this.client = new Client({
-    host: 'clickfactorydev.ccavhumaz3qp.us-west-1.rds.amazonaws.com',
-    port: 5334,
-    user: 'clickfactory',
-    password: 'click2018',
-  })
-this.client.connect();
-//const url = require('url');
-
+const client = new Client({
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+})
+client.connect();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
@@ -20,7 +19,7 @@ let mainWindow;
 function createWindow () { 
     const startUrl = process.env.NODE_ENV === 'development'? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
     mainWindow = new BrowserWindow({
-         width: 800, height: 500,minimizable:false, title:'Kelly`s Application',
+         width: 800, height: 500,minimizable:false,fullscreenable:false, title:'Kelly`s Application',
          webPreferences: {
                 nodeIntegration: true,
                 preload: __dirname + '/preload.js'
@@ -31,7 +30,7 @@ function createWindow () {
       mainWindow = null;
     });
  
-   mainWindow.webContents.openDevTools();
+   //mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -59,11 +58,21 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('getAll',(event,arg)=>{
-    console.log(arg);
-    // const temp = this.client.query('SELECT* FROM clickfactorydev.answersite_bing_spend'); 
-    // this.client.end();
-    //console.log(temp);
-    // Event emitter for sending asynchronous messages
-    event.sender.send('getAll-reply', 'async pong');
+ipcMain.on('GETBIDS',(event,arg)=>{
+    client.query('SELECT * FROM fb_sprinklr_template.bids').then((res) => {
+        event.sender.send('GETBIDSRESP', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    })
+})
+ipcMain.on('LOADAUD',(event,arg)=>{
+    client.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
+        event.sender.send('LOADAUDR', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    })
 })
