@@ -8,7 +8,7 @@ const CREATIVEPROPS = ['AdAccountId', 'AdAccountName', 'InstagramAccountId', 'Ad
     'CampaignBidStrategy', 'EnableAdSetsBudgetRebalancing', 'PaidInitiativeDailyBudget', 'PaidInitiativeLifetimeBudget',
     'PricingLevel', 'SprinklrBudgetId', 'UseAverageBid', 'BillingEvent', 'OptimizationGoal', 'LinkObjectId',
     'RelatedPage', 'StoryId', 'AppLinkDestination', 'ApplicationID', 'Body','CallToAction',
-    'CallToActionLink', 'CreativeType,DisplayLink', 'DisplayassingleImage', 'DontPublishDuplicatePost', 'Duration', 'DynamicAdVoice', 'DynamicCreativeId', 'EventId',
+    'CallToActionLink', 'CreativeType','DisplayLink', 'DisplayassingleImage', 'DontPublishDuplicatePost', 'Duration', 'DynamicAdVoice', 'DynamicCreativeId', 'EventId',
     'Image', 'ImageCrops', 'ImageHash', 'ImageUrl', 'LeadFormID', 'Link', 'LinkDescription', 'MessengerSponsoredMessage', 'MobileAppDeepLink', 'ObjectStoreUrl', 'OfferId', 'PageWelcomeMessage', 'PhoneNumber', 'RetailerIDs',
     'SprinklrDraftPostId', 'Title', 'Transition', 'URLTags', 'UsePageasActor', 'VideoCaptions', 'VideoID', 'VideoSAMId', 'VideoThumbnailURL',
     'VideoURL', 'InstagramImage', 'InstagramImageCrops', 'InstagramImageHash', 'InstagramImageUrl', 'InstagramVideoID',
