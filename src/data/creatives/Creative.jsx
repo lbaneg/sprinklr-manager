@@ -60,7 +60,7 @@ class Creative{
         this.useaccelerateddelivery = 'Yes';
         this.dcmalphaenabled = 'false';
         this['adset:adbu'] = `${campaign.facebookPage}`;
-        this['paidinitiative:ftag_new'] = `${account.dSKFtag.split('=')[1]}`;
+        this['paidinitiative:ftag_new'] = device.device==='DSK_'? `${account.dSKFtag.split('=')[1]}`:`${account.mOBFtag.split('=')[1]}`;
         this.targetingoptimization = `${device.targetingOptimization}`;
         this.dcmalphaenabled = `${device.dcmAlphaEnabled}`;
         this['paidinitiative:addeliverylocation'] = `${device.paidInitiativeADDeliveryLocation}`;
