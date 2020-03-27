@@ -3,7 +3,7 @@ import {CREATIVEPROPS} from './creative-propertys'
 class Creative{
     constructor(device,account,audiance,campaign){
         for(let prop of CREATIVEPROPS){
-            this[prop.toLowerCase()] = "";
+            this[prop.toLowerCase()] = '';
         }
         this.adaccountid = account.adAccountId;
         this.adaccountname =account.adAccountName;
@@ -23,7 +23,7 @@ class Creative{
         this.body = `${campaign.bodyBLURB}`;
         this.displaylink = `${account.displayLink}`;
         this.imageurl = `${campaign.facebookImage}`;
-        this.link = `${campaign.liveURL}${account.dSKFtag}`;
+        this.link = `${campaign.liveURL}`.concat(device.device==='DSK_'? `${account.dSKFtag}`:`${account.mOBFtag}`);
         this.description = `${campaign.description}`;
         this.headline = `${campaign.headline}`;
         this.facebookpage = `${campaign.facebookPage}`;
