@@ -10,9 +10,9 @@ class MobileUpload extends Upload{
         }
         if(bids.has(campaignstr)){
             const camp = bids.get(campaignstr);
-            this.bidAmount = camp.desktop.startingBid;
-            this.campaignBidStrategy = camp.desktop.campaignBudget;
-            this.paidInitiativeDailyBudget = camp.desktop.campaignBudget;
+            this.bidAmount = camp.mobile.startingBid;
+            this.campaignBidStrategy = camp.mobile.campaignBudget;
+            this.paidInitiativeDailyBudget = camp.mobile.campaignBudget;
         }
         if(campaignstr === 'CNET') super.excludedConnections = "c:145802748959745,c:7155422274"; //edgecase 
    
