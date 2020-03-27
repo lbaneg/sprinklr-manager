@@ -69,6 +69,8 @@ class Creative{
         this.title = `${campaign.headline}`;
         this.locationtypes =  `${device.locationTypes}`;
         this.excludedconnections = `${device.excludedConnections}`;
+        this['advariant:adtype'] = '';
+        this['advariant:posttype'] = '';
     }
 }
 export default Creative;

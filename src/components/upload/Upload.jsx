@@ -107,16 +107,6 @@ class Upload extends React.Component {
     for(let label of labels){
       let fprop = creativ[label.replace(/\s/g, "").replace('`','').toLowerCase()];
       props.push(`${fprop}`);
-      // switch(label){
-      //   case 'Dcm Alpha Enabled':
-      //   case 'Dcm Enabled':
-      //   case 'Dcm Set View Tags':
-      //   case 'Multi Shared End Card Included':  
-      //     props.push(`'${fprop}'`);
-      //     break;
-      //   default:
-      //     props.push(`${fprop}`);
-      // }
     }
     return props;
   }
