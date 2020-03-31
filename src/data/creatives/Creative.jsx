@@ -59,7 +59,7 @@ class Creative{
         this.postapproval ='FALSE';
         this.useaccelerateddelivery = 'Yes';
         this.dcmalphaenabled = 'false';
-        this['adset:adbu'] = `${campaign.facebookPage}`;
+        this['adset:adbu'] = `${account.adSetADBU}`;
         this['paidinitiative:ftag_new'] = device.device==='DSK_'? `${account.dSKFtag.split('=')[1]}`:`${account.mOBFtag.split('=')[1]}`;
         this.targetingoptimization = `${device.targetingOptimization}`;
         this.dcmalphaenabled = `${device.dcmAlphaEnabled}`;
