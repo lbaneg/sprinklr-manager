@@ -3,10 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 import './Upload.css';
-// import Button from 'react-bootstrap/Button';
-// import { IoIosCloudUpload } from 'react-icons/io';
+import Button from 'react-bootstrap/Button';
+import { IoIosCreate } from 'react-icons/io';
 import {IoIosCloudDownload} from 'react-icons/io';
 import CSVReader from 'react-csv-reader';
 import { CSVLink } from "react-csv";
@@ -30,16 +31,22 @@ class Upload extends React.Component {
       error: false,
       filename:'',
       uploadComplet:false,
+      exportFileComplet:false,
       audianceMap: new Map(AUDIENCETARGETING),
       accountFactory: new AccountFactory(),
       uploadType:{
         'MOBILE':'mobile',
         'DESKTOP':'desktop'
-      }
+      },
+      site:'',
+      audianceTargets:[],
+      activeTargets:0
     }
     this.test = this.test.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
-    this._loadFileListener = this._loadFileListener.bind(this)
+    this._loadFileListener = this._loadFileListener.bind(this);
+    this.onCreateExportFile = this.onCreateExportFile.bind(this);
+    this.onClickItem = this.onClickItem.bind(this);
   }
   componentDidMount() {
     window.ipcRenderer.on('getAll-reply', this._loadFileListener)
@@ -66,31 +73,43 @@ class Upload extends React.Component {
     this.setState({uploadComplet:false});
   }
   onFileLoaded(data) {
+    this.setState({activeTargets:0})
     this.setState({ inputFile: data });
     this._createCampaigns(data);
+  }
+  onCreateExportFile(){
     this._createUpload(this.state.uploadType.DESKTOP);
     this._createUpload(this.state.uploadType.MOBILE);
-    this._nameFile();
-    this.setState({uploadComplet:true});
+    this._nameExportFile();
+    this.setState({exportFileComplet:true});
   }
-  _nameFile(){
+  _nameExportFile(){
     let campaign = this.state.campaigns[0];
-    this.setState({filename:`FB Upload File - ${campaign.facebookPage} - ${campaign.headline} - ${campaign.dateAdded}`})
+    this.setState({filename:`FB Upload File - ${campaign.facebookPage} - ${campaign.headline} - ${campaign.dateAdded}`});
   }
   _createCampaigns(data){
-    let campaigns = [];
+    let campaigns = []; 
     for (let row = 1; row < data.length;row++) {
       if(data[row][0] !== '') campaigns.push(new Campaign(...data[row])); //data[row][0] checks that the elem has a line number property.
     }
-    this.setState({campaigns:campaigns})
+    const site = data[1][2];
+    this.setState({site:site}); // NEED TO CHECK ALL SITE NAME ARE THE SAME;
+    this.setState({audianceTargets: this.state.audianceMap.get(site).map((target)=>{
+          return {active:false,target:target}
+        })
+    });
+    this.setState({campaigns:campaigns});
+    this.setState({uploadComplet:true});
   }
   _createUpload(type){
     let campaigns = this.state.campaigns;
-    let map = this.state.audianceMap;
+    //let map = this.state.audianceMap;//map.get(campaign.facebookPage);
     for (let campaign of campaigns) {
-      const audiance = map.get(campaign.facebookPage);
+      const audiance = this.state.audianceTargets.filter((elm) =>{
+        if(elm.active) return elm; 
+      })
       for(let i =0; i < audiance.length;i++){
-         let props = this._setProps(campaign,type,audiance[i]);
+         let props = this._setProps(campaign,type,audiance[i].target);
          this.setState(state => {
           const list = state.csvData.push(props);
           return {list};
@@ -109,6 +128,26 @@ class Upload extends React.Component {
       props.push(`${fprop}`);
     }
     return props;
+  }
+  onClickItem(e){
+    const i = Number(e.currentTarget.getAttribute('item-index'));
+    if(i >= 0){
+      this.setState(state=>{
+        let activeTargets= state.activeTargets;
+        const audianceTargets = state.audianceTargets.map((target,j)=>{
+            if(i === j){
+              target.active = !target.active;
+              target.active? activeTargets++:activeTargets--;
+            }
+            return target;
+          });
+        return {
+          audianceTargets,
+          activeTargets
+        }
+      })
+    }
+  
   }
 
   render() {
@@ -142,11 +181,33 @@ class Upload extends React.Component {
             </Col>
             <Col xs={6} md={6} lg={6}>
               {
-                this.state.uploadComplet? <CSVLink data={csvData} filename={`${this.state.filename}.csv`}
+                this.state.exportFileComplet? <CSVLink data={csvData} filename={`${this.state.filename}.csv`}
                 className="btn btn-primary"
                 target=""> <IoIosCloudDownload/> Download File</CSVLink>:''
               }
             </Col>
+          </Row>
+          <Row style={{marginTop:'30px'}}>
+            {
+              this.state.site?(
+                <Col xs={10} md={10} lg={10}>
+                 <div style={{width:'100%',height:'30px'}}>
+                 <h6 style={{float:'left'}}>Select Audiance Targets for {this.state.site}</h6>
+                  {
+                    <Button style={{float:'right'}} variant="primary" disabled= {this.state.activeTargets <= 0? true:false} onClick={this.onCreateExportFile}><IoIosCreate/> Create</Button>
+                  }
+                 </div>
+                  <hr/>
+                  <ListGroup>
+                    {
+                      this.state.audianceTargets.map((elm,i)=>{
+                      return  <ListGroup.Item key={i} item-index = {i} active = {elm.active} onClick = {this.onClickItem} style={{cursor:'pointer'}}> {elm.target} </ListGroup.Item>
+                      })
+                    }
+                  </ListGroup>
+                </Col>
+              ):''
+            }
           </Row>
         </Container>
       </section>

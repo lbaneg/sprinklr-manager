@@ -19,7 +19,7 @@ let mainWindow;
 function createWindow () { 
     const startUrl = process.env.NODE_ENV === 'development'? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
     mainWindow = new BrowserWindow({
-         width: 800, height: 500,minimizable:false,fullscreenable:false, title:'Kelly`s Application',
+         width: 800, height: 500,minimizable:false,fullscreenable:false, title:'Sprinklr Templater',
          webPreferences: {
                 nodeIntegration: true,
                 preload: __dirname + '/preload.js'
@@ -30,7 +30,7 @@ function createWindow () {
       mainWindow = null;
     });
  
-   //mainWindow.webContents.openDevTools();
+   if(process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
