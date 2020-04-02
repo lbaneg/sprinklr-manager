@@ -2,14 +2,18 @@ import Upload from './Upload';
 import {DESKTOPVALUES} from './upload-data';
 import {BIDS} from './upload-data';
 class DesktopUpload extends Upload{
-    constructor(campaignstr) {
+    constructor(campaignstr,bid) {
         super();
-        const bids = new Map(BIDS);
+        const map = new Map(BIDS);
         for(let [key,value] of Object.entries(DESKTOPVALUES) ){
             this[key] = value;
         }
-        if(bids.has(campaignstr)){
-            const camp = bids.get(campaignstr);
+        if(bid){
+            this.bidAmount = bid.starting_bid;
+            this.campaignBidStrategy = bid.campaign_budget;
+            this.paidInitiativeDailyBudget = bid.campaign_budget;
+        }else{//IF NO INTERNET ACCESS READ FROM FILE
+            const camp = map.get(campaignstr);
             this.bidAmount = camp.desktop.startingBid;
             this.campaignBidStrategy = camp.desktop.campaignBudget;
             this.paidInitiativeDailyBudget = camp.desktop.campaignBudget;

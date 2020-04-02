@@ -23,8 +23,10 @@ import {AUDIENCETARGETING} from '../../data/audience-targeting';
 class Upload extends React.Component {
   message = {
     INSERTUPLOAD:'INSERTUPLOAD',
-    LOADAUDR:'LOADAUDR',
-    LOADAUD:'LOADAUD'
+    LOADBIDS:'LOADBIDS',
+    LOADBIDSRESP:'LOADBIDSRESP',
+    LOADAUD:"LOADAUD",
+    LOADAUDR:"LOADAUDR"
   }
   constructor(props) {
     super(props);
@@ -46,9 +48,10 @@ class Upload extends React.Component {
       },
       site:'',
       audianceTargets:[],
-      activeTargets:0
+      activeTargets:0,
+      bids:[]
     }
-   
+    this._loadBids = this._loadBids.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onCreateExportFile = this.onCreateExportFile.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
@@ -56,10 +59,16 @@ class Upload extends React.Component {
   }
   componentDidMount() {
     window.ipcRenderer.on(this.message.LOADAUDR, this.loadAudianceTargetResp)
-    window.ipcRenderer.send(this.message.LOADAUD,this.state.inputFile);
+    window.ipcRenderer.on(this.message.LOADBIDSRESP, this._loadBids)
+    window.ipcRenderer.send(this.message.LOADAUD);
+    window.ipcRenderer.send(this.message.LOADBIDS);
   }
   componentWillUnmount() {
-    window.ipcRenderer.removeListener(this.message.LOADAUDR, this.loadAudianceTargetResp)
+    window.ipcRenderer.removeListener(this.message.LOADAUDR, this.loadAudianceTargetResp);
+    window.ipcRenderer.removeListener(this.message.LOADBIDSRESP, this._loadBids);
+  }
+  _loadBids(event,res){
+    this.setState({bids:res});
   }
   loadAudianceTargetResp(event,resp){
     const audiances = resp.map(elm=>{
@@ -122,7 +131,19 @@ class Upload extends React.Component {
     }
   }
   _setProps(campaign,type,audiance){//should be named createUploadTemplate
-    let device = type === 'desktop'? new DesktopUpload(campaign.facebookPage): new MobileUpload(campaign.facebookPage);
+    const bid = this.state.bids.filter((elm)=>{
+      return (elm.site === campaign.facebookPage && elm.platform === type);
+    }).shift();
+    let device;
+    switch(type){ 
+      case 'desktop':
+        device = new DesktopUpload(campaign.facebookPage,bid);
+      break;
+     case 'mobile':
+        device = new MobileUpload(campaign.facebookPage,bid);
+        break;
+     default:
+    }
     const account = this.state.accountFactory.getAccount(campaign.facebookPage);
     const creativ = new Creative(device,account,audiance,campaign);
     const props = [];
