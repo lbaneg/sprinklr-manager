@@ -23,6 +23,8 @@ import {AUDIENCETARGETING} from '../../data/audience-targeting';
 class Upload extends React.Component {
   message = {
     INSERTUPLOAD:'INSERTUPLOAD',
+    LOADAUDR:'LOADAUDR',
+    LOADAUD:'LOADAUD'
   }
   constructor(props) {
     super(props);
@@ -36,6 +38,7 @@ class Upload extends React.Component {
       uploadComplet:false,
       exportFileComplet:false,
       audianceMap: new Map(AUDIENCETARGETING),
+      audiances:[],
       accountFactory: new AccountFactory(),
       uploadType:{
         'MOBILE':'mobile',
@@ -49,12 +52,21 @@ class Upload extends React.Component {
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onCreateExportFile = this.onCreateExportFile.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
+    this.loadAudianceTargetResp = this.loadAudianceTargetResp.bind(this);
   }
   componentDidMount() {
-    //window.ipcRenderer.on(this.message.INSERTUPLOAD, this._loadFileListener)
+    window.ipcRenderer.on(this.message.LOADAUDR, this.loadAudianceTargetResp)
+    window.ipcRenderer.send(this.message.LOADAUD,this.state.inputFile);
   }
   componentWillUnmount() {
-    //window.ipcRenderer.removeListener(this.message.INSERTUPLOAD, this._loadFileListener)
+    window.ipcRenderer.removeListener(this.message.LOADAUDR, this.loadAudianceTargetResp)
+  }
+  loadAudianceTargetResp(event,resp){
+    const audiances = resp.map(elm=>{
+      elm.selected = false;
+      return elm;
+    });
+     this.setState({audiances:audiances});
   }
   onRemoveFile(event){
     document.querySelector('.csv-input').value = '';
@@ -79,16 +91,17 @@ class Upload extends React.Component {
     this.setState({filename:`FB Upload File - ${campaign.facebookPage} - ${campaign.headline} - ${campaign.dateAdded}`});
   }
   _createCampaigns(data){
-    let campaigns = []; 
+    let campaigns = [];
+    const audiances = this.state.audiances;
     for (const row of data) {
       campaigns.push(new Campaign(...row)); //data[row][0] checks that the elem has a line number property.
     }
-    const site = data[1][2];
+    const site = campaigns[0].facebookPage;
     this.setState({site:site}); // NEED TO CHECK ALL SITE NAME ARE THE SAME;
-    this.setState({audianceTargets: this.state.audianceMap.get(site).map((target)=>{
-          return {active:false,target:target}
-        })
-    });
+    const audianceTargets = audiances.filter(elm=>{
+        return elm.site === site;
+    })
+    this.setState({audianceTargets:audianceTargets}) 
     this.setState({campaigns:campaigns});
     this.setState({uploadComplet:true});
   }
@@ -97,7 +110,7 @@ class Upload extends React.Component {
     //let map = this.state.audianceMap;//map.get(campaign.facebookPage);
     for (let campaign of campaigns) {
       const audiance = this.state.audianceTargets.filter((elm) =>{
-        return elm.active === true; 
+        return elm.selected === true; 
       })
       for(let i =0; i < audiance.length;i++){
          let props = this._setProps(campaign,type,audiance[i].target);
@@ -127,8 +140,8 @@ class Upload extends React.Component {
         let activeTargets= state.activeTargets;
         const audianceTargets = state.audianceTargets.map((target,j)=>{
             if(i === j){
-              target.active = !target.active;
-              target.active? activeTargets++:activeTargets--;
+              target.selected = !target.selected;
+              target.selected? activeTargets++:activeTargets--;
             }
             return target;
           });
@@ -192,7 +205,7 @@ class Upload extends React.Component {
                   <ListGroup>
                     {
                       this.state.audianceTargets.map((elm,i)=>{
-                      return  <ListGroup.Item key={i} item-index = {i} active = {elm.active} onClick = {this.onClickItem} style={{cursor:'pointer'}}> {elm.target} </ListGroup.Item>
+                      return  <ListGroup.Item key={i} item-index = {i} active = {elm.selected} onClick = {this.onClickItem} style={{cursor:'pointer'}}> {elm.audience_name} </ListGroup.Item>
                       })
                     }
                   </ListGroup>
