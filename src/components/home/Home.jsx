@@ -48,8 +48,6 @@ class Home extends React.Component {
   }
 
   render() {
-    console.log(' length '+ this.state.options.series.length)
-    console.log(this.state.options.series.toString());
     return (
       <section className="page" id="home-page">
         <Container fluid>
