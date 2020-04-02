@@ -2,7 +2,9 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const { Client } = require('pg');
-const {ipcMain} = require('electron')
+const {ipcMain} = require('electron');
+const { v4  } = require('uuid');
+
 require('dotenv').config();
 
 const client = new Client({
@@ -58,15 +60,42 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('GETBIDS',(event,arg)=>{
+//BIDS MESSAGE API
+ipcMain.on('LOADBIDS',(event,arg)=>{
     client.query('SELECT * FROM fb_sprinklr_template.bids').then((res) => {
-        event.sender.send('GETBIDSRESP', res.rows);
+        event.sender.send('LOADBIDSRESP', res.rows);
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
     })
 })
+ipcMain.on('DELETEBIDS',(event,arg)=>{
+    for(const elm of arg){
+        client.query('DELETE FROM fb_sprinklr_template.bids WHERE bid_id = ($1)',[elm.bid_id]).then((res) => {
+            //event.sender.send('LOADBIDSRESP', res.rows);
+        }).catch((e) =>{
+            console.log('ERROR:');
+            console.error(e.stack);
+            console.log(e);
+        })
+    }
+})
+ipcMain.on('CREATEBID',(event,arg)=>{
+    
+        client.query('INSERT INTO fb_sprinklr_template.bids(site,vendor,starting_bid,campaign_budget)  VALUES($1,$2,$3,$4)',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget]).then((res) => {
+            //event.sender.send('LOADBIDSRESP', res.rows);
+            // console.log(`INSERTED ${arg.site} ${arg.vendor} ${arg.starting_bid} ${arg.campaign_budget}` );
+            // console.log(res.toString());
+        }).catch((e) =>{
+            console.log('ERROR:');
+            console.error(e.stack);
+            console.log(e);
+        })
+    
+})
+
+//AUDIENCE MESSAGE API
 ipcMain.on('LOADAUD',(event,arg)=>{
     client.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
         event.sender.send('LOADAUDR', res.rows);
@@ -75,4 +104,26 @@ ipcMain.on('LOADAUD',(event,arg)=>{
         console.error(e.stack);
         console.log(e);
     })
+})
+ipcMain.on('CREATEAUD',(event,arg)=>{
+    //console.log(v4.toString())
+    const UUID = v4();
+    client.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender)  VALUES($1,$2,$3,$4,$5,$6)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender]).then((res) => {
+        //event.sender.send('LOADBIDSRESP', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    })
+})
+ipcMain.on('DELETEAUD',(event,arg)=>{
+    for(const elm of arg){
+        client.query('DELETE FROM fb_sprinklr_template.audience_targets WHERE audience_id = ($1)',[elm.audience_id]).then((res) => {
+            //event.sender.send('LOADBIDSRESP', res.rows);
+        }).catch((e) =>{
+            console.log('ERROR:');
+            console.error(e.stack);
+            console.log(e);
+        })
+    }
 })

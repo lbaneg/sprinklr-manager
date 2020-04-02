@@ -106,7 +106,7 @@ class Upload extends React.Component {
     //let map = this.state.audianceMap;//map.get(campaign.facebookPage);
     for (let campaign of campaigns) {
       const audiance = this.state.audianceTargets.filter((elm) =>{
-        if(elm.active) return elm; 
+        return elm.active === true; 
       })
       for(let i =0; i < audiance.length;i++){
          let props = this._setProps(campaign,type,audiance[i].target);

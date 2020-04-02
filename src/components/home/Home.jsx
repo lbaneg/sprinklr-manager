@@ -24,7 +24,10 @@ class Home extends React.Component {
               <hr/>
             </Col>
           </Row>
-
+          <Row>
+            <Col sm={12} md={12} lg={12}>
+            </Col>
+          </Row>
         </Container>
       </section>
     );
