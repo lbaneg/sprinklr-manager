@@ -82,8 +82,8 @@ ipcMain.on('DELETEBIDS',(event,arg)=>{
     }
 })
 ipcMain.on('CREATEBID',(event,arg)=>{
-    
-        client.query('INSERT INTO fb_sprinklr_template.bids(site,vendor,starting_bid,campaign_budget)  VALUES($1,$2,$3,$4)',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget]).then((res) => {
+        const UUID = v4();       
+        client.query('INSERT INTO fb_sprinklr_template.bids(site,vendor,starting_bid,campaign_budget,bid_id,platform)  VALUES($1,$2,$3,$4,$5,$6)',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget,UUID,arg.platform]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
             // console.log(`INSERTED ${arg.site} ${arg.vendor} ${arg.starting_bid} ${arg.campaign_budget}` );
             // console.log(res.toString());
@@ -94,7 +94,17 @@ ipcMain.on('CREATEBID',(event,arg)=>{
         })
     
 })
-
+ipcMain.on('LOADSELECTBIDS',(event,arg)=>{
+    console.log(arg.site,arg.platform);
+    client.query('SELECT * FROM fb_sprinklr_template.bids WHERE site= $1 AND platform = $2',[arg.site,arg.platform]).then((res) => {
+        console.log(res.rows);
+        event.sender.send('LOADSELECTBIDSRESP', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    })
+})
 //AUDIENCE MESSAGE API
 ipcMain.on('LOADAUD',(event,arg)=>{
     client.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
@@ -126,6 +136,16 @@ ipcMain.on('DELETEAUD',(event,arg)=>{
             console.log(e);
         })
     }
+})
+ipcMain.on('LOADAUDIANCETARGETS',(event,arg)=>{
+    if(!Array.isArray(arg)) arg = [arg]; //ADD BETTER ERROR HANDLEING
+    client.query('SELECT * FROM fb_sprinklr_template.audience_targets WHERE site = $1',arg).then((res) => {
+        event.sender.send('LOADAUDIANCETARGETSRESP', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    }) 
 })
 
 //UPLOADS MESSAGE API
