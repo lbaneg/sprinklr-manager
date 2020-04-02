@@ -21,7 +21,7 @@ let mainWindow;
 function createWindow () { 
     const startUrl = process.env.NODE_ENV === 'development'? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
     mainWindow = new BrowserWindow({
-         width: 800, height: 500,minimizable:false,fullscreenable:false, title:'Sprinklr Templater',
+         width: 900, height: 700,minimizable:false,fullscreenable:false, title:'Sprinklr Manager',
          webPreferences: {
                 nodeIntegration: true,
                 preload: __dirname + '/preload.js'
@@ -126,4 +126,38 @@ ipcMain.on('DELETEAUD',(event,arg)=>{
             console.log(e);
         })
     }
+})
+
+//UPLOADS MESSAGE API
+ipcMain.on('INSERTUPLOAD',(event,arg)=>{
+    for(const rec of arg){
+        const UUID = v4();
+        const date =  new Date().toLocaleString('en-US', { timeZone: 'GMT' });
+        const values = [UUID,date]
+        let record = values.concat(rec);
+        client.query('INSERT INTO fb_sprinklr_template.uploads(upload_id,upload_date,line_number,date_added,facebook_page,headline,description_dek,body_blurb,live_url,facebook_image)  VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',record).then((res) => {
+            //event.sender.send('LOADBIDSRESP', res.rows);
+        }).catch((e) =>{
+            console.log('ERROR:');
+            console.error(e.stack);
+            console.log(e);
+        })
+    }
+  
+})
+
+//GRAPH MESSAGE API
+ipcMain.on('LOADPIEDATA',(event,arg)=>{
+    client.query('SELECT  facebook_page AS name, COUNT(*) as y FROM fb_sprinklr_template.uploads GROUP BY facebook_page').then((res) => {
+        const resp = res.rows.map(elm=>{
+            elm.y = Number(elm.y);
+            return elm;
+        })
+        event.sender.send('LOADPIEDATARESP', resp);
+        console.log(res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+    })
 })

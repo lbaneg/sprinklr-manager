@@ -21,6 +21,9 @@ import {AUDIENCETARGETING} from '../../data/audience-targeting';
 
 
 class Upload extends React.Component {
+  message = {
+    INSERTUPLOAD:'INSERTUPLOAD',
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -42,37 +45,24 @@ class Upload extends React.Component {
       audianceTargets:[],
       activeTargets:0
     }
-    this.test = this.test.bind(this);
+   
     this.onRemoveFile = this.onRemoveFile.bind(this);
-    this._loadFileListener = this._loadFileListener.bind(this);
     this.onCreateExportFile = this.onCreateExportFile.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
   }
   componentDidMount() {
-    window.ipcRenderer.on('getAll-reply', this._loadFileListener)
+    //window.ipcRenderer.on(this.message.INSERTUPLOAD, this._loadFileListener)
   }
   componentWillUnmount() {
-    window.ipcRenderer.removeListener('getAll-reply', this._loadFileListener)
+    //window.ipcRenderer.removeListener(this.message.INSERTUPLOAD, this._loadFileListener)
   }
-  _loadFileListener(event){
-    console.log('Runaujn!!!'+ event);
-  }
-  test(){
-  //<button onClick={this.test}>
-  //Test
-  //</button>
-    const res = window.ipcRenderer.send('getAll',{name:'hello!'});
-    for(let r in res){
-      console.log(`${r}`);
-    }
-  }
-  
   onRemoveFile(event){
     document.querySelector('.csv-input').value = '';
     this.setState({inputFile:{}});
     this.setState({uploadComplet:false});
   }
   onFileLoaded(data) {
+    data.shift();//REMOVE THE FIRST ROW OF FILE
     this.setState({activeTargets:0})
     this.setState({ inputFile: data });
     this._createCampaigns(data);
@@ -82,6 +72,7 @@ class Upload extends React.Component {
     this._createUpload(this.state.uploadType.MOBILE);
     this._nameExportFile();
     this.setState({exportFileComplet:true});
+    window.ipcRenderer.send(this.message.INSERTUPLOAD,this.state.inputFile);
   }
   _nameExportFile(){
     let campaign = this.state.campaigns[0];
@@ -89,8 +80,8 @@ class Upload extends React.Component {
   }
   _createCampaigns(data){
     let campaigns = []; 
-    for (let row = 1; row < data.length;row++) {
-      if(data[row][0] !== '') campaigns.push(new Campaign(...data[row])); //data[row][0] checks that the elem has a line number property.
+    for (const row of data) {
+      campaigns.push(new Campaign(...row)); //data[row][0] checks that the elem has a line number property.
     }
     const site = data[1][2];
     this.setState({site:site}); // NEED TO CHECK ALL SITE NAME ARE THE SAME;
