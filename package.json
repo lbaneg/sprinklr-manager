@@ -64,8 +64,8 @@
   "author": "me",
   "description": "electon app",
   "build": {
-    "appId": "fbuploader",
-    "productName": "FB Uploader",
+    "appId": "sprinklrmanager",
+    "productName": "Sprinklr Manager",
     "copyright": "Copyright",
     "mac": {
       "category": "public.app-category.utilities"
