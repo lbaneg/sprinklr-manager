@@ -122,7 +122,7 @@ class Upload extends React.Component {
         return elm.selected === true; 
       })
       for(let i =0; i < audiance.length;i++){
-         let props = this._setProps(campaign,type,audiance[i].target);
+         let props = this._setProps(campaign,type,audiance[i].audience_name);
          this.setState(state => {
           const list = state.csvData.push(props);
           return {list};
