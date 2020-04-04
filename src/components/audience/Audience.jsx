@@ -46,17 +46,11 @@ class audiences extends React.Component {
     this.setState({audiences:res});
   }
   onDelete(e){
-    //   const audiences = this.state.audiences.filter(elm=>{
-    //    //if(!elm.selected) return elm;
-    //    return elm.selected === false;
-    //  });
-     const audiences = this.state.audiences.filter(elm=>{
-       return elm.selected === true;
-     });
-   //this.setState({audiences:audiences});
+    const audiences = this.state.audiences.filter(elm=>{
+      return elm.selected === true;
+    });
    window.ipcRenderer.send(this.message.DELETEAUD,audiences);
    window.ipcRenderer.send(this.message.LOADAUD);
-   //console.log(deleteaudiences.toString()); //SEND to BACKEND 
    this.setState({showAlert:true});
  }
  onNew(e){
@@ -75,17 +69,6 @@ class audiences extends React.Component {
       });
   }
   onSaveChanges(){
-    // this.setState(state=>{
-    //   const audience = state.audience;
-    //   const audiences = state.audiences;
-    //   let show = state.show;
-    //   audiences.push(audience);
-    //   show = false;
-    //   return{
-    //     audience,
-    //     show
-    //   }
-    // })
     const audience = this.state.audience;
     window.ipcRenderer.send(this.message.CREATEAUD,audience);
     window.ipcRenderer.send(this.message.LOADAUD);
