@@ -24,11 +24,11 @@
     "uuid": "~7.0.3"
   },
   "devDependencies": {
-    "electron": "^8.0.1",
-    "electron-packager": "~14.2.1",
+    "electron": "^8.2.0",
     "electron-builder": "~22.3.2",
     "concurrently": "~5.1.0",
-    "wait-on": "4.0.0"
+    "wait-on": "4.0.0",
+    "devtron": "~1.4.0"
   },
   "scripts": {
     "start": "BROWSER=none env NODE_ENV=development concurrently \"react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
@@ -39,12 +39,7 @@
     "react:eject": "react-scripts eject",
     "electron": "electron .",
     "start:react": "react-scripts start",
-    "start:electron": "electron .",
-    "build:electron": "mkdir build/src && cp main.jsx build",
-    "package": "electron-builder build --mac --win -c.extraMetadata.main=build/main.jsx --publish never",
-    "pac-electron": "electron-builder build --mac --win --publish never",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\""
+    "start:electron": "electron ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -62,7 +57,7 @@
     ]
   },
   "author": "me",
-  "description": "electon app",
+  "description": "electon app for sprinklr manager",
   "build": {
     "appId": "sprinklrmanager",
     "productName": "Sprinklr Manager",
