@@ -176,7 +176,6 @@ ipcMain.on('LOADPIEDATA',(event,arg)=>{
             return elm;
         })
         event.sender.send('LOADPIEDATARESP', resp);
-        console.log(res.rows);
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
