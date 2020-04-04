@@ -21,7 +21,9 @@ let mainWindow;
 function createWindow () { 
     const startUrl = process.env.NODE_ENV === 'development'? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`;
     mainWindow = new BrowserWindow({
-         width: 900, height: 700,minimizable:false,fullscreenable:false, title:'Sprinklr Manager',
+         width: 1200, 
+         height: 700,
+         title:'Sprinklr Manager',
          webPreferences: {
                 nodeIntegration: true,
                 preload: __dirname + '/preload.js'
