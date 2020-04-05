@@ -38,13 +38,19 @@ class Home extends React.Component {
     window.ipcRenderer.removeListener(this.message.LOADPIEDATARESP, this._loadPieData)
   }
   _loadPieData(event,res){
-    this.setState(state=>{
-        const options = this.state.options;
-        options.series[0]={data: res};
-        return {
-          options,
-        }
-    })
+    if(res.status === 'ok'){
+          this.setState(state=>{
+            const options = this.state.options;
+            options.series[0]={data: res.data};
+            return {
+              options,
+            }
+        })
+    }else{
+      console.log(`${res.message}`);
+      console.log(`${res.data}`);
+    }
+   
   }
 
   render() {
@@ -60,7 +66,7 @@ class Home extends React.Component {
           <Row>
             <Col sm={12} md={12} lg={12}>
               {
-               this.state.options.series.length > 0?<HighchartsReact highcharts={Highcharts} options={this.state.options} />:''
+               this.state.options.series.length > 0?<HighchartsReact highcharts={Highcharts} options={this.state.options} />:' No Data Available'
               }
             </Col>
           </Row>

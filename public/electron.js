@@ -1,19 +1,19 @@
 
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const {ipcMain} = require('electron');
 const { v4  } = require('uuid');
 
 require('dotenv').config();
 
-const client = new Client({
+const pool = new Pool({
   host: process.env.PGHOST,
   port: process.env.PGPORT,
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
 })
-client.connect();
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
@@ -35,6 +35,7 @@ function createWindow () {
     });
  
    if(process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools();
+   mainWindow.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -47,7 +48,8 @@ app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
+        pool.end();
     }
 });
 
@@ -61,108 +63,142 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
+const RESPONSE = {
+    status:'',
+    data:null,
+    message:''
+}
 //BIDS MESSAGE API
 ipcMain.on('LOADBIDS',(event,arg)=>{
-    client.query('SELECT * FROM fb_sprinklr_template.bids').then((res) => {
+    pool.query('SELECT * FROM fb_sprinklr_template.bids').then((res) => {
         event.sender.send('LOADBIDSRESP', res.rows);
+        
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
+        event.sender.send('LOADPIEDATARESP', e);
+        
     })
 })
 ipcMain.on('DELETEBIDS',(event,arg)=>{
     for(const elm of arg){
-        client.query('DELETE FROM fb_sprinklr_template.bids WHERE bid_id = ($1)',[elm.bid_id]).then((res) => {
+        pool.query('DELETE FROM fb_sprinklr_template.bids WHERE bid_id = ($1)',[elm.bid_id]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
+            
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
             console.log(e);
+            event.sender.send('LOADPIEDATARESP', e);
+            
         })
     }
 })
 ipcMain.on('CREATEBID',(event,arg)=>{
         const UUID = v4();       
-        client.query('INSERT INTO fb_sprinklr_template.bids(site,vendor,starting_bid,campaign_budget,bid_id,platform)  VALUES($1,$2,$3,$4,$5,$6)',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget,UUID,arg.platform]).then((res) => {
+        pool.query('INSERT INTO fb_sprinklr_template.bids(site,vendor,starting_bid,campaign_budget,bid_id,platform)  VALUES($1,$2,$3,$4,$5,$6)',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget,UUID,arg.platform]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
             // console.log(`INSERTED ${arg.site} ${arg.vendor} ${arg.starting_bid} ${arg.campaign_budget}` );
             // console.log(res.toString());
+            
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
             console.log(e);
+            event.sender.send('LOADPIEDATARESP', e);
+            
         })
-    
 })
 ipcMain.on('LOADSELECTBIDS',(event,arg)=>{
     console.log(arg.site,arg.platform);
-    client.query('SELECT * FROM fb_sprinklr_template.bids WHERE site= $1 AND platform = $2',[arg.site,arg.platform]).then((res) => {
+    pool.query('SELECT * FROM fb_sprinklr_template.bids WHERE site= $1 AND platform = $2',[arg.site,arg.platform]).then((res) => {
         console.log(res.rows);
         event.sender.send('LOADSELECTBIDSRESP', res.rows);
+        
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
+        event.sender.send('LOADPIEDATARESP', e);
+        
     })
 })
 //AUDIENCE MESSAGE API
 ipcMain.on('LOADAUD',(event,arg)=>{
-    client.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
+    pool.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
         event.sender.send('LOADAUDR', res.rows);
+        
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
+        event.sender.send('LOADPIEDATARESP', e);
+        
     })
 })
 ipcMain.on('CREATEAUD',(event,arg)=>{
     //console.log(v4.toString())
     const UUID = v4();
-    client.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender)  VALUES($1,$2,$3,$4,$5,$6)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender]).then((res) => {
+    pool.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender)  VALUES($1,$2,$3,$4,$5,$6)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender]).then((res) => {
         //event.sender.send('LOADBIDSRESP', res.rows);
+        
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
+        event.sender.send('LOADPIEDATARESP', e);
+        
     })
 })
 ipcMain.on('DELETEAUD',(event,arg)=>{
     for(const elm of arg){
-        client.query('DELETE FROM fb_sprinklr_template.audience_targets WHERE audience_id = ($1)',[elm.audience_id]).then((res) => {
+        pool.query('DELETE FROM fb_sprinklr_template.audience_targets WHERE audience_id = ($1)',[elm.audience_id]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
+            
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
             console.log(e);
+            event.sender.send('LOADPIEDATARESP', e);
         })
     }
 })
 ipcMain.on('LOADAUDIANCETARGETS',(event,arg)=>{
+    const response = {...RESPONSE};
     if(!Array.isArray(arg)) arg = [arg]; //ADD BETTER ERROR HANDLEING
-    client.query('SELECT * FROM fb_sprinklr_template.audience_targets WHERE site = $1',arg).then((res) => {
-        event.sender.send('LOADAUDIANCETARGETSRESP', res.rows);
+    pool.query('SELECT * FROM fb_sprinklr_template.audience_targets WHERE site = $1',arg).then((res) => {
+        response.status = 'ok';
+        response.data = res.rows;
+        response.message = `${res.command}`;
+        event.sender.send('LOADAUDIANCETARGETSRESP', response);
     }).catch((e) =>{
-        console.log('ERROR:');
-        console.error(e.stack);
-        console.log(e);
+        response.status = 'error';
+        response.data = `${e.stack}`;
+        response.message = `${e.message}`;
+        console.log(JSON.stringify(response));
+        event.sender.send('LOADPIEDATARESP', e);
+        
     }) 
 })
 
 //UPLOADS MESSAGE API
 ipcMain.on('INSERTUPLOAD',(event,arg)=>{
+    const response = {...RESPONSE};
     for(const rec of arg){
         const UUID = v4();
         const date =  new Date().toLocaleString('en-US', { timeZone: 'GMT' });
         const values = [UUID,date]
         let record = values.concat(rec);
-        client.query('INSERT INTO fb_sprinklr_template.uploads(upload_id,upload_date,line_number,date_added,facebook_page,headline,description_dek,body_blurb,live_url,facebook_image)  VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',record).then((res) => {
+        pool.query('INSERT INTO fb_sprinklr_template.uploads(upload_id,upload_date,line_number,date_added,facebook_page,headline,description_dek,body_blurb,live_url,facebook_image)  VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',record).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
+            
         }).catch((e) =>{
-            console.log('ERROR:');
-            console.error(e.stack);
-            console.log(e);
+            response.status = 'error';
+            response.data = `${e.stack}`;
+            response.message = `${e.message}`;
+            event.sender.send('insert-upload-response', response); //NOT Implemented yet
+            
         })
     }
   
@@ -170,15 +206,25 @@ ipcMain.on('INSERTUPLOAD',(event,arg)=>{
 
 //GRAPH MESSAGE API
 ipcMain.on('LOADPIEDATA',(event,arg)=>{
-    client.query('SELECT  facebook_page AS name, COUNT(*) as y FROM fb_sprinklr_template.uploads GROUP BY facebook_page').then((res) => {
+    const response = {...RESPONSE};
+    pool.query('SELECT  facebook_page AS name, COUNT(*) as y FROM fb_sprinklr_template.uploads GROUP BY facebook_page').then((res) => {
         const resp = res.rows.map(elm=>{
             elm.y = Number(elm.y);
             return elm;
         })
-        event.sender.send('LOADPIEDATARESP', resp);
+        response.status = 'ok';
+        response.data = resp;
+        response.message = `${res.command}`;
+        event.sender.send('LOADPIEDATARESP', response);
+        
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
+        response.status = 'error';
+        response.data = `${e.stack}`;
+        response.message = `${e.message}`;
+        event.sender.send('LOADPIEDATARESP', response);
+        
     })
 })
