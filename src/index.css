@@ -22,3 +22,7 @@ code {
 }
 table.tfonts tr td { font-size: 10px; }
 table.tfonts tr th { font-size: 10px; }
+sm-table{
+  height:400px;
+  overflow-y:scroll;
+}

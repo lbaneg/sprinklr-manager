@@ -107,7 +107,7 @@ class Bids extends React.Component {
 
   render() {
     return (
-      <section className="page" id="bids-page">
+      <section className="page" id="bids-page" style={{overflowY: 'hidden'}}>
         <Container fluid>
           <Row>
             <Col sm={12} md={12} lg={12}>
@@ -161,8 +161,9 @@ class Bids extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={12} md={12} lg={12}>
-            <Table responsive className='tfonts'>
+            <Col xs={12} md={12} lg={12} >
+              <div style={{height:'400px',overflowY:'scroll'}}>
+              <Table responsive className='tfonts'>
                     <thead>
                       <tr>
                         <th>Site</th>
@@ -171,7 +172,7 @@ class Bids extends React.Component {
                         <th>Campaign Budget</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody style={{height: '1200px',overflowY:'scroll'}}>
                       {
                         this.state.bids.map((bid,i)=>{
                           return (
@@ -186,6 +187,7 @@ class Bids extends React.Component {
                       }
                     </tbody>
               </Table>
+              </div>
             </Col>
           </Row>
         </Container>

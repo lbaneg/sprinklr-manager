@@ -35,8 +35,7 @@ function createWindow () {
       mainWindow = null;
     });
  
-   if(process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools();
-   mainWindow.openDevTools();
+   if(process.env.NODE_ENV === 'development') mainWindow.openDevTools();
 }
 
 // This method will be called when Electron has finished

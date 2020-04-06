@@ -154,6 +154,8 @@ class audiences extends React.Component {
             </Col>
           </Row>
             <Col xs={12} md={12} lg={12}>
+            <div style={{height:'400px',overflowY:'scroll'}}>
+
             <Table responsive className='tfonts'>
                     <thead>
                       <tr>
@@ -180,6 +182,7 @@ class audiences extends React.Component {
                       }
                     </tbody>
               </Table>
+              </div>
             </Col>
           </Row>
         </Container>
