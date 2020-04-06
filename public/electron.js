@@ -8,10 +8,11 @@ const { v4  } = require('uuid');
 require('dotenv').config();
 
 const pool = new Pool({
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
+  host: 'clickfactorydev.ccavhumaz3qp.us-west-1.rds.amazonaws.com',
+  port: '5432',
+  user: 'clickfactory',
+  database:'clickfactorydev',
+  password: 'click2018'
 })
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -215,16 +216,11 @@ ipcMain.on('LOADPIEDATA',(event,arg)=>{
         response.status = 'ok';
         response.data = resp;
         response.message = `${res.command}`;
-        event.sender.send('LOADPIEDATARESP', response);
-        
+        event.sender.send('LOADPIEDATARESP',  response);
     }).catch((e) =>{
-        console.log('ERROR:');
-        console.error(e.stack);
-        console.log(e);
         response.status = 'error';
         response.data = `${e.stack}`;
         response.message = `${e.message}`;
         event.sender.send('LOADPIEDATARESP', response);
-        
     })
 })

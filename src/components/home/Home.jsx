@@ -47,8 +47,8 @@ class Home extends React.Component {
             }
         })
     }else{
-      console.log(`${res.message}`);
-      console.log(`${res.data}`);
+      console.log(`message: ${res.message}`);
+      console.log(`date:  ${res.data}`);
     }
    
   }
