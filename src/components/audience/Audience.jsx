@@ -125,7 +125,7 @@ class audiences extends React.Component {
                     <input type="number" id="age_min" placeholder="Age Min" value={this.state.value} onChange={this.onChange} />
                     <input type="number" id="age_max" placeholder="Age Max" value={this.state.value} onChange={this.onChange} />
                     <input type="text" id="gender" placeholder="Gender" value={this.state.value} onChange={this.onChange} />
-
+                    <input type="text" id="sprinklr_targeting_id" placeholder="Sprinklr Targeting ID" value={this.state.value} onChange={this.onChange} />
                     </Modal.Body>
                     <Modal.Footer>
                       <Button variant="secondary" onClick={this.onClose}>

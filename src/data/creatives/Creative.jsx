@@ -43,8 +43,8 @@ class Creative{
         this.calltoaction = 'LEARN_MORE';
         this.dontpublishduplicatepost = 'No';
         this.usepageasactor = 'False';
-        this.agemax = "65";
-        this.agemin="18";
+        this.agemax = `${audiance.age_max}`;
+        this.agemin=`${audiance.age_min}`;
         this.countries='United States';
         this.excludedpublishercategories = 'tragedy_and_conflict,mature_audiences,gambling,debated_social_issues,dating';
         this.excludedpublisherids = '23842800342310509:AD Publisher Block List';
@@ -71,6 +71,7 @@ class Creative{
         this.excludedconnections = `${device.excludedConnections}`;
         this['advariant:adtype'] = '';
         this['advariant:posttype'] = '';
+        this.sprinklrtargetingid = `${audiance.sprinklr_targeting_id}`
     }
 }
 export default Creative;

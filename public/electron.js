@@ -140,7 +140,7 @@ ipcMain.on('LOADAUD',(event,arg)=>{
 ipcMain.on('CREATEAUD',(event,arg)=>{
     //console.log(v4.toString())
     const UUID = v4();
-    pool.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender)  VALUES($1,$2,$3,$4,$5,$6)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender]).then((res) => {
+    pool.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender,sprinklr_targeting_id)  VALUES($1,$2,$3,$4,$5,$6,$7)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender,arg.sprinklr_targeting_id]).then((res) => {
         //event.sender.send('LOADBIDSRESP', res.rows);
         
     }).catch((e) =>{
