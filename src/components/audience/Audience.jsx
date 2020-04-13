@@ -88,7 +88,7 @@ class audiences extends React.Component {
             return elm;
         })
         return {
-          bids:audiences,
+          audiences:audiences,
         }
       })
   }
