@@ -153,7 +153,6 @@ class audiences extends React.Component {
             </Col>
           </Row>
           <Row>
-          <Row>
             <Col>
                 <Modal show={this.state.showNewModel} onHide={this.onClose}>
                     <Modal.Header closeButton>
@@ -263,39 +262,40 @@ class audiences extends React.Component {
               </div>
             </Col>
           </Row>
+          <Row style={{marginTop:'20px'}}>
             <Col xs={12} md={12} lg={12}>
-            <div style={{height:'400px',overflowY:'scroll'}}>
-            <Table responsive className='tfonts'>
-                    <thead>
-                      <tr>
-                        <th>Site</th>
-                        <th>Audience Name</th>
-                        <th>Age Min</th>
-                        <th>Age Max</th>
-                        <th>Gender</th>
-                        <th>Sprinklr Targeting ID</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        this.state.audiences.map((aud,i)=>{
-                          return (
-                          <tr key = {i} aud-index={i} style={{cursor:'pointer',backgroundColor:aud.selected?'#ff2f56':''}} onClick={this.onItemSelect}>
-                            <td>{aud.site}</td>
-                            <td>{aud.audience_name}</td>
-                            <td>{aud.age_min}</td>
-                            <td>{aud.age_max}</td>
-                            <td>{aud.gender}</td>
-                            <td>{aud.sprinklr_targeting_id}</td>
-                          </tr>
-                          )
-                        })
-                      }
-                    </tbody>
-              </Table>
-            </div>
-            </Col>
-          </Row>
+              <div style={{height:'400px',overflowY:'scroll'}}>
+              <Table responsive className='tfonts'>
+                      <thead>
+                        <tr>
+                          <th>Site</th>
+                          <th>Audience Name</th>
+                          <th>Age Min</th>
+                          <th>Age Max</th>
+                          <th>Gender</th>
+                          <th>Sprinklr Targeting ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.audiences.map((aud,i)=>{
+                            return (
+                            <tr key = {i} aud-index={i} style={{cursor:'pointer',backgroundColor:aud.selected?'#ff2f56':''}} onClick={this.onItemSelect}>
+                              <td>{aud.site}</td>
+                              <td>{aud.audience_name}</td>
+                              <td>{aud.age_min}</td>
+                              <td>{aud.age_max}</td>
+                              <td>{aud.gender}</td>
+                              <td>{aud.sprinklr_targeting_id}</td>
+                            </tr>
+                            )
+                          })
+                        }
+                      </tbody>
+                </Table>
+              </div>
+              </Col>
+          </Row> 
         </Container>
       </section>
     );

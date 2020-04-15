@@ -256,7 +256,7 @@ class Bids extends React.Component {
               </div>
             </Col>
           </Row>
-          <Row>
+          <Row style={{marginTop:'20px'}}>
             <Col xs={12} md={12} lg={12} >
               <div style={{height:'400px',overflowY:'scroll'}}>
               <Table responsive className='tfonts'>
