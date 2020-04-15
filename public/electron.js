@@ -81,17 +81,26 @@ ipcMain.on('LOADBIDS',(event,arg)=>{
         
     })
 })
+ipcMain.on('EDITBID',(event,arg)=>{
+    pool.query('UPDATE fb_sprinklr_template.bids SET site=$1,vendor=$2,starting_bid=$3,campaign_budget=$4,platform=$5 WHERE bid_id=$6',[arg.site,arg.vendor,arg.starting_bid,arg.campaign_budget,arg.platform,arg.bid_id]).then((res) => {
+        loadBids(event);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+        event.sender.send('LOADBIDSRESP', e);
+    })
+})
 ipcMain.on('DELETEBIDS',(event,arg)=>{
     for(const elm of arg){
         pool.query('DELETE FROM fb_sprinklr_template.bids WHERE bid_id = ($1)',[elm.bid_id]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
-            
+            loadBids(event);
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
             console.log(e);
-            event.sender.send('LOADPIEDATARESP', e);
-            
+            event.sender.send('LOADBIDSRESP', e);
         })
     }
 })
@@ -101,13 +110,12 @@ ipcMain.on('CREATEBID',(event,arg)=>{
             //event.sender.send('LOADBIDSRESP', res.rows);
             // console.log(`INSERTED ${arg.site} ${arg.vendor} ${arg.starting_bid} ${arg.campaign_budget}` );
             // console.log(res.toString());
-            
+            loadBids(event);
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
             console.log(e);
-            event.sender.send('LOADPIEDATARESP', e);
-            
+            event.sender.send('LOADBIDSRESP', e);
         })
 })
 ipcMain.on('LOADSELECTBIDS',(event,arg)=>{
@@ -120,7 +128,6 @@ ipcMain.on('LOADSELECTBIDS',(event,arg)=>{
         console.log('ERROR:');
         console.error(e.stack);
         console.log(e);
-        event.sender.send('LOADPIEDATARESP', e);
         
     })
 })
@@ -142,7 +149,7 @@ ipcMain.on('CREATEAUD',(event,arg)=>{
     const UUID = v4();
     pool.query('INSERT INTO fb_sprinklr_template.audience_targets(audience_id,site,audience_name,age_min,age_max,gender,sprinklr_targeting_id)  VALUES($1,$2,$3,$4,$5,$6,$7)',[UUID,arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender,arg.sprinklr_targeting_id]).then((res) => {
         //event.sender.send('LOADBIDSRESP', res.rows);
-        
+        loadAud(event);
     }).catch((e) =>{
         console.log('ERROR:');
         console.error(e.stack);
@@ -155,7 +162,7 @@ ipcMain.on('DELETEAUD',(event,arg)=>{
     for(const elm of arg){
         pool.query('DELETE FROM fb_sprinklr_template.audience_targets WHERE audience_id = ($1)',[elm.audience_id]).then((res) => {
             //event.sender.send('LOADBIDSRESP', res.rows);
-            
+            loadAud(event);
         }).catch((e) =>{
             console.log('ERROR:');
             console.error(e.stack);
@@ -163,6 +170,18 @@ ipcMain.on('DELETEAUD',(event,arg)=>{
             event.sender.send('LOADPIEDATARESP', e);
         })
     }
+})
+ipcMain.on('EDITAUD',(event,arg)=>{
+    pool.query('UPDATE fb_sprinklr_template.audience_targets SET site=$1,audience_name=$2,age_min=$3,age_max=$4,gender=$5,sprinklr_targeting_id=$6 WHERE audience_id=$7',[arg.site,arg.audience_name,arg.age_min,arg.age_max,arg.gender,arg.sprinklr_targeting_id,arg.audience_id]).then((res) => {
+        //event.sender.send('LOADBIDSRESP', res.rows);
+        loadAud(event);
+        
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+        event.sender.send('LOADAUDR', e);
+    })
 })
 ipcMain.on('LOADAUDIANCETARGETS',(event,arg)=>{
     const response = {...RESPONSE};
@@ -223,3 +242,26 @@ ipcMain.on('LOADPIEDATA',(event,arg)=>{
         event.sender.send('LOADPIEDATARESP', response);
     })
 })
+
+function loadAud(event){//RELOADS UI WITH UPDATED DATA 
+    pool.query('SELECT * FROM fb_sprinklr_template.audience_targets').then((res) => {
+        event.sender.send('LOADAUDR', res.rows);
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+        event.sender.send('LOADAUDR', e);
+    })
+}
+function loadBids(event){
+    pool.query('SELECT * FROM fb_sprinklr_template.bids').then((res) => {
+        event.sender.send('LOADBIDSRESP', res.rows);
+        
+    }).catch((e) =>{
+        console.log('ERROR:');
+        console.error(e.stack);
+        console.log(e);
+        event.sender.send('LOADBIDSRESP', e);
+        
+    })
+}
