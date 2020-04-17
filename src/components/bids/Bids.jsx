@@ -235,24 +235,15 @@ class Bids extends React.Component {
             <Col xs={12} md={12} lg={12}>
               <div style={{float:'rigth',width:'500px',height:'50px'}}>
 
-                    <Button variant="primary" style={{float:'left'}} onClick={this.onNew}>
+                    <Button variant="primary" style={{float:'left'}} size="sm" onClick={this.onNew}>
                      <IoMdCreate/> New
                     </Button>
-                    {
-                      this.state.selectCount === 1?
-                        <Button variant="warning" style={{float:"rigth",marginLeft:'10px'}} onClick={this.onEdit}>
-                          <IoMdOpen/> Edit
-                        </Button>
-                        :''
-                    }
-                    {
-                      this.state.selectCount >= 1?
-                        <Button variant="danger" style={{float:"rigth",marginLeft:'10px'}} onClick={this.onDelete}>
-                        <IoMdTrash/> Delete
-                        </Button>
-                        :''
-                    }
-                  
+                    <Button variant="warning" style={{float:"rigth",marginLeft:'10px'}} onClick={this.onEdit} size="sm" disabled={this.state.selectCount === 1?false:true}>
+                      <IoMdOpen/> Edit
+                    </Button>
+                    <Button variant="danger" style={{float:"rigth",marginLeft:'10px'}} onClick={this.onDelete} size="sm" disabled={this.state.selectCount >= 1?false:true}>
+                      <IoMdTrash/> Delete
+                    </Button>
               </div>
             </Col>
           </Row>
