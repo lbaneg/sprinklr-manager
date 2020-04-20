@@ -7,6 +7,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import './Upload.css';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { IoIosCreate } from 'react-icons/io';
 import {IoIosCloudDownload} from 'react-icons/io';
 import CSVReader from 'react-csv-reader';
@@ -15,10 +16,11 @@ import {HEADERVALUES} from '../../data/header-values';
 import Campaign from '../../data/campaign/Campaign';
 import DesktopUpload from '../../data/upload/DesktopUpload';
 import MobileUpload from '../../data/upload/MobileUpload';
+import Instagram from '../../data/upload/Instagram';
+import InstagramStory from '../../data/upload/InstagramStory';
 import Creative from '../../data/creatives/Creative';
 import AccountFactory from '../../data/account/AccountFactory';
 import {AUDIENCETARGETING} from '../../data/audience-targeting';
-
 
 class Upload extends React.Component {
   message = {
@@ -43,19 +45,38 @@ class Upload extends React.Component {
       audiances:[],
       accountFactory: new AccountFactory(),
       uploadType:{
-        'MOBILE':'mobile',
-        'DESKTOP':'desktop'
+        'MOBILE':'Facebook Mobile',
+        'FACEBOOK':'Facebook',
+        'INSTAGRAM':'Instagram',
+        'INSTAGRAMSTORY':'Instagram Feed'
       },
+      bidType:{
+        DESKTOP:'Facebook',
+        MOBILE:'Facebook Mobile',
+        INSTAGRAM:'Instagram'
+      },
+      accountType:{
+        FACEBOOK:'F',
+        FACEBOOKMOBILE:'FM',
+        INSTAGRAM:'IG',
+        INSTAGRAMSTORY:'IGS'
+      },
+      uploadIG:false,
+      uploadIGStory:false,
       site:'',
       audianceTargets:[],
       activeTargets:0,
-      bids:[]
+      bids:[],
+      isInstagramable:false,
+      isInstagramStoryable:false
     }
     this._loadBids = this._loadBids.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
     this.onCreateExportFile = this.onCreateExportFile.bind(this);
     this.onClickItem = this.onClickItem.bind(this);
     this.loadAudianceTargetResp = this.loadAudianceTargetResp.bind(this);
+    this.onIGSelect = this.onIGSelect.bind(this);
+    this.onIGStorySelect = this.onIGStorySelect.bind(this);
   }
   componentDidMount() {
     window.ipcRenderer.on(this.message.LOADAUDR, this.loadAudianceTargetResp)
@@ -89,8 +110,10 @@ class Upload extends React.Component {
     this._createCampaigns(data);
   }
   onCreateExportFile(){
-    this._createUpload(this.state.uploadType.DESKTOP);
-    this._createUpload(this.state.uploadType.MOBILE);
+    this._createUpload(this.state.bidType.DESKTOP,this.state.accountType.FACEBOOK);
+    this._createUpload(this.state.bidType.MOBILE,this.state.accountType.FACEBOOKMOBILE);
+    if(this.state.uploadIG) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAM);
+    if(this.state.uploadIGStory) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAMSTORY);
     this._nameExportFile();
     this.setState({exportFileComplet:true});
     window.ipcRenderer.send(this.message.INSERTUPLOAD,this.state.inputFile);
@@ -110,11 +133,14 @@ class Upload extends React.Component {
     const audianceTargets = audiances.filter(elm=>{
         return elm.site === site;
     })
+    for(let bid of this.state.bids){ 
+      if(bid.vendor === 'Instagram' && bid.site === site) this.setState({isInstagramable:true})
+    }
     this.setState({audianceTargets:audianceTargets}) 
     this.setState({campaigns:campaigns});
     this.setState({uploadComplet:true});
   }
-  _createUpload(type){
+  _createUpload(bidType,accountType){
     let campaigns = this.state.campaigns;
     //let map = this.state.audianceMap;//map.get(campaign.facebookPage);
     for (let campaign of campaigns) {
@@ -122,7 +148,7 @@ class Upload extends React.Component {
         return elm.selected === true; 
       })
       for(let i =0; i < audiance.length;i++){
-         let props = this._setProps(campaign,type,audiance[i].audience_name);
+         let props = this._setProps(campaign,bidType,accountType,audiance[i]);//bidtype accounttype
          this.setState(state => {
           const list = state.csvData.push(props);
           return {list};
@@ -130,17 +156,32 @@ class Upload extends React.Component {
       }
     }
   }
-  _setProps(campaign,type,audiance){//should be named createUploadTemplate
-    const bid = this.state.bids.filter((elm)=>{
-      return (elm.site === campaign.facebookPage && elm.platform === type);
-    }).shift();
+  _setProps(campaign,bidType,accountType,audiance){//should be named createUploadTemplate
+    
+    // const bid = this.state.bids.filter((elm)=>{
+    //   return (elm.site === campaign.facebookPage && elm.platform === type);
+    // }).shift();
+    let bid;
+    for(let elm of this.state.bids){
+        if(elm.site === campaign.facebookPage && elm.vendor === bidType){
+          bid = elm;
+          break;
+        }
+    }
+    if(bid === undefined) return {} //ERROR CHECK;
     let device;
-    switch(type){ 
-      case 'desktop':
+    switch(accountType){ 
+      case this.state.accountType.FACEBOOK:
         device = new DesktopUpload(campaign.facebookPage,bid);
       break;
-     case 'mobile':
+     case this.state.accountType.FACEBOOKMOBILE:
         device = new MobileUpload(campaign.facebookPage,bid);
+        break;
+      case this.state.accountType.INSTAGRAM:
+        device = new Instagram(campaign.facebookPage,bid);
+        break;
+      case this.state.accountType.INSTAGRAMSTORY:
+        device = new InstagramStory(campaign.facebookPage,bid);
         break;
      default:
     }
@@ -173,6 +214,12 @@ class Upload extends React.Component {
       })
     }
   
+  }
+  onIGSelect(e){
+    this.setState({uploadIG:!this.state.uploadIG});
+  }
+  onIGStorySelect(e){
+    this.setState({uploadIGStory:!this.state.uploadIGStory});
   }
 
   render() {
@@ -213,26 +260,64 @@ class Upload extends React.Component {
             </Col>
           </Row>
           <Row style={{marginTop:'30px'}}>
-            {
-              this.state.site?(
-                <Col xs={10} md={10} lg={10}>
-                 <div style={{width:'100%',height:'30px'}}>
-                 <h6 style={{float:'left'}}>Select Audiance Targets for {this.state.site}</h6>
-                  {
-                    <Button style={{float:'right'}} variant="primary" disabled= {this.state.activeTargets <= 0? true:false} onClick={this.onCreateExportFile}><IoIosCreate/> Create</Button>
-                  }
-                 </div>
-                  <hr/>
-                  <ListGroup>
+            <Col xs={6} md={6} lg={6}>
+                {
+                  this.state.site?(
+                    <Col xs={10} md={10} lg={10}>
+                    <div style={{width:'100%',height:'30px'}}>
+                    <h6 style={{float:'left'}}>Select Audiance Targets for {this.state.site}</h6>
+                      {
+                        <Button style={{float:'right'}} size='sm' variant="primary" disabled= {this.state.activeTargets <= 0? true:false} onClick={this.onCreateExportFile}><IoIosCreate/> Create</Button>
+                      }
+                    </div>
+                      <hr/>
+                      <ListGroup>
+                        {
+                          this.state.audianceTargets.map((elm,i)=>{
+                          return  <ListGroup.Item key={i} item-index = {i} active = {elm.selected} onClick = {this.onClickItem} style={{cursor:'pointer'}}> {elm.audience_name} </ListGroup.Item>
+                          })
+                        }
+                      </ListGroup>
+                    </Col>
+                  ):''
+                }
+            </Col>
+            <Col xs={6} md={6} lg={6}>
+              <Row>
                     {
-                      this.state.audianceTargets.map((elm,i)=>{
-                      return  <ListGroup.Item key={i} item-index = {i} active = {elm.selected} onClick = {this.onClickItem} style={{cursor:'pointer'}}> {elm.audience_name} </ListGroup.Item>
-                      })
+                        this.state.isInstagramable?(
+                          <div id='ig-select'>
+                              <h6>Do you want to add Instagram Campaign?</h6> 
+                              <Form>
+                                  <Form.Check 
+                                    type="switch"
+                                    id="ig-switch"
+                                    label=""
+                                    onChange={this.onIGSelect}
+                                  />
+                              </Form>
+                          </div>
+                        ):''
                     }
-                  </ListGroup>
-                </Col>
-              ):''
-            }
+              </Row>
+              <Row>
+                  {
+                        this.state.isInstagramable?(
+                          <div id='ig-select'>
+                              <h6>Do you want to add Instagram Story?</h6> 
+                              <Form>
+                                  <Form.Check 
+                                    type="switch"
+                                    id="ig-story-switch"
+                                    label=""
+                                    onChange={this.onIGStorySelect}
+                                  />
+                              </Form>
+                          </div>
+                        ):''
+                    }
+              </Row>
+            </Col>
           </Row>
         </Container>
       </section>

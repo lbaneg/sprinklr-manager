@@ -1,5 +1,6 @@
 import {CREATIVEPROPS} from './creative-propertys'
-
+import Instagram from '../upload/Instagram';
+import InstagramStory from '../upload/InstagramStory';
 class Creative{
     constructor(device,account,audiance,campaign){
         for(let prop of CREATIVEPROPS){
@@ -7,12 +8,34 @@ class Creative{
         }
         this.adaccountid = account.adAccountId;
         this.adaccountname =account.adAccountName;
-        this.adname = `${device.device}${campaign.headline}_${campaign.lineNumber}`;
-        this.adsetname= `${device.device}${campaign.headline}_${audiance}`;
-        this.campaignname =`${device.device}${campaign.headline}`;
-        this.deviceplatforms = `${device.devicePlatforms}`;
-        this.platformpositions = `${device.platformPositions}`
-        this.publisherplatforms =  `${device.publisherPlatforms}`;
+        if(device instanceof Instagram){
+            this.adname = `${device.device}${campaign.headline}_${campaign.lineNumber}_SQUARE`;
+            this.adsetname= `${device.device}${campaign.headline}_${audiance.audience_name}|Feed`;
+            this.campaignname =`${device.device}${campaign.headline}_Instagram Feed`;
+            this['paidinitiative:ftag_new'] = `${account.iGMOBftag.split('=')[1]}`;
+            this.link = `${campaign.liveURL}`.concat(`${account.iGMOBftag}`);
+            this.deviceplatforms = `${device.devicePlatforms}`;
+            this.platformpositions = `${device.platformPositions}`
+            this.publisherplatforms =  `${device.publisherPlatforms}`;  
+        }else if(device instanceof InstagramStory){
+            this.adname = `${device.device}${campaign.headline}_${campaign.lineNumber}`;
+            this.adsetname= `${device.device}${campaign.headline}_${audiance.audience_name}| Stories`;
+            this.campaignname =`${device.device}${campaign.headline}_Instagram Stories`;
+            this['paidinitiative:ftag_new'] = `${account.iGMOBftag.split('=')[1]}`;
+            this.link = `${campaign.liveURL}`.concat(`${account.iGMOBftag}`);
+            this.deviceplatforms = `${device.devicePlatforms}`;
+            this.platformpositions = `${device.platformPositions}`;
+            this.publisherplatforms =  `${device.publisherPlatforms}`;  
+        }else{
+            this.adname = `${device.device}${campaign.headline}_${campaign.lineNumber}`;
+            this.adsetname= `${device.device}${campaign.headline}_${audiance.audience_name}`;
+            this.campaignname =`${device.device}${campaign.headline}`;
+            this.deviceplatforms = `${device.devicePlatforms}`;
+            this.platformpositions = `${device.platformPositions}`
+            this.publisherplatforms =  `${device.publisherPlatforms}`;
+            this['paidinitiative:ftag_new'] = device.device==='DSK_'? `${account.dSKFtag.split('=')[1]}`:`${account.mOBFtag.split('=')[1]}`;
+            this.link = `${campaign.liveURL}`.concat(device.device==='DSK_'? `${account.dSKFtag}`:`${account.mOBFtag}`);
+        }
         this.adsettimestart = new Date().toLocaleDateString();
         this.attributionspec = `${device.attributionSpec}`;
         this.bidamount = `${device.bidAmount}`;
@@ -23,7 +46,6 @@ class Creative{
         this.body = `${campaign.bodyBLURB}`;
         this.displaylink = `${account.displayLink}`;
         this.imageurl = `${campaign.facebookImage}`;
-        this.link = `${campaign.liveURL}`.concat(device.device==='DSK_'? `${account.dSKFtag}`:`${account.mOBFtag}`);
         this.description = `${campaign.description}`;
         this.headline = `${campaign.headline}`;
         this.facebookpage = `${campaign.facebookPage}`;
@@ -60,7 +82,6 @@ class Creative{
         this.useaccelerateddelivery = 'Yes';
         this.dcmalphaenabled = 'false';
         this['adset:adbu'] = `${account.adSetADBU}`;
-        this['paidinitiative:ftag_new'] = device.device==='DSK_'? `${account.dSKFtag.split('=')[1]}`:`${account.mOBFtag.split('=')[1]}`;
         this.targetingoptimization = `${device.targetingOptimization}`;
         this.dcmalphaenabled = `${device.dcmAlphaEnabled}`;
         this['paidinitiative:addeliverylocation'] = `${device.paidInitiativeADDeliveryLocation}`;
@@ -71,7 +92,8 @@ class Creative{
         this.excludedconnections = `${device.excludedConnections}`;
         this['advariant:adtype'] = '';
         this['advariant:posttype'] = '';
-        this.sprinklrtargetingid = `${audiance.sprinklr_targeting_id}`
+        this.sprinklrtargetingid = `${audiance.sprinklr_targeting_id||''}`
+        this.instagramaccountid = `${account.instagramAccountID}`;
     }
 }
 export default Creative;

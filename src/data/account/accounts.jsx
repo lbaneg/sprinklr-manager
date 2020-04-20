@@ -1,147 +1,183 @@
-const ACCOUNTS = [
-    ['CBSNews',
-        [
-            'CBSNews',
-            'ac:10152525100778997',
-            'CBS News AD Version 1',
-            'CBSNews.com',
-            'o:131459315949',
-            '?ftag=ACQ449302a',
-            '?ftag=ACQ0534a8f',
-            'CBS News', '', '', ''
-        ]
-    ],
-    ['247Sports',
-        [
-            '247Sports',
-            'ac:10153557766503997',
-            '247 Sports AD',
-            '247Sports.com',
-            'o:130373190333432',
-            '?ftag=ACQ-07-10abg1d',
-            '?ftag=ACQ-07-10abg1e',
-            '24/7 Sports', '', '', '', ''
-        ]
-    ],
-    ['Chowhound',
-        [
-            'Chowhound',
-            'ac:10153188952138997',
-            'Chowhound Audience Development',
-            'Chowhound.com',
-            'o:32145209819',
-            '?ftag=ACQ611e676',
-            '?ftag=ACQ-07-10aac9e',
-            'Chowhound', '', '', '', ''
-        ]
-    ],
-    ['CNET',
-        [
-            'CNET',
-            'ac:10152556302918997',
-            'CNET Audience Development V1',
-            'CNET.com',
-            'o:7155422274',
-            '?ftag=ACQ9265a8a',
-            '?ftag=ACQb4020c1',
-            'CNET',
-            '',
-            'c:145802748959745,c:7155422274',
-            '',
-            'Exclude CNET and CNET ES FANS'
-        ]
-    ],
-    ['ComicBook',
-        [
-            'ComicBook',
-            'ac:1102941909874497',
-            'ComicBook Audience Development',
-            'ComicBook.com',
-            'o:39795225543',
-            '?ftag=ACQ-07-10abi3g&ttag=FB_DSK_Comicbook_AD&utm_source=Facebook&utm_campaign=Comicbook_AD',
-            '?ftag=ACQ-07-10abi3h&ttag=FB_MOB_Comicbook_AD&utm_source=Facebook_Mobile&utm_campaign=Comicbook_AD',
-            'ComicBook',
-            '',
-            '',
-            ''
-        ]
-    ],
-    ['ET Online',
-        [
-            'ET Online',
-            'ac:10155427397453997',
-            'ET Online Audience Development',
-            'ETOnline.com',
-            'o:106843036179',
-            '?ftag=ACQ-07-10aag9f',
-            '?ftag=ACQ-07-10aag9g',
-            'ET Online',
-            '',
-            '',
-            '',
-            ''
-        ]
-    ],
-    ['Gamespot',
-        [
-            'Gamespot',
-            'ac:10152371526218997',
-            'Gamespot Audience Development V1',
-            'GameSpot.com',
-            'o:13892765435',
-            '?ftag=ACQa2186e3',
-            '?ftag=ACQ-07-10aae5e',
-            'Gamespot', '', '', '', ''
-        ]
-    ],
-    ['Inside Edition',
-        [
-            'Inside Edition',
-            'ac:10155397886108997',
-            'Inside Edition Aud Dev',
-            'InsideEdition.com',
-            'o:71728150722',
-            '?ftag=ACQ-07-10abe8j',
-            '?ftag=ACQ-07-10abe9a',
-            'Inside Edition',
-            '', '', '', ''
 
-        ]
-    ],
-    ['PopCulture',
-        [
-            'PopCulture',
-            'ac:283794938923232',
-            'PopCulture Audience Development',
-            'PopCulture.com',
-            'o:225096980839858',
-            '?ftag=ACQ-07-10abi3e&ttag=FB_DSK_Popculture_AD&utm_source=Facebook&utm_campaign=Popculture_AD',
-            '?ftag=ACQ-07-10abi3f&ttag=FB_MOB_Popculture_AD&utm_source=Facebook_Mobile & utm_campaign=Popculture_AD',
-            'PopCulture', '', '', '', ''
-        ]
-    ],
-    ['TVGuide',
-        [
-            'TVGuide',
-            'ac:295140667330998',
-            'TVGuide Audience Development',
-            'TVGuide.com',
-            'o:80415657792?ftag=ACQ568ec48?ftag=ACQ58c84e2',
-            'TV Guide', '', '', '', ''
-        ]
-    ],
-    ['The Guide',
-        [
-            'The Guide',
-            'ac:10155283134198997',
-            'Guide Aud Dev v2',
-            'Guide.com',
-            'o:1800547170168104',
-            '?ftag=ACQ-07-10aaj7d',
-            '?ftag=ACQ-07-10aaj7e',
-            'Guide', '', '', '', ''
-        ]
-    ]
+
+const ACCOUNTS = [
+    {
+        facebookPageUniqueLookup : 'CBSNews',
+        adAccountId: 'ac:10152525100778997',
+        adAccountName: 'CBS News AD Version 1',
+        displayLink: 'CBSNews.com',
+        relatedPage: 'o:131459315949',
+        dSKFtag:'?ftag=ACQ449302a',
+        mOBFtag: '?ftag=ACQ0534a8f',
+        adSetADBU: '?ftag=ACQ0534a8f',
+        paidInitiativeADInitiative: 'CBS News',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:438537202888273',
+        iGMOBftag:'?ftag=ACQ-07-10abf2d'
+    },
+    {
+        facebookPageUniqueLookup : '247Sports',
+        adAccountId: 'ac:10153557766503997',
+        adAccountName: '247 Sports AD',
+        displayLink: '247Sports.com',
+        relatedPage: 'o:130373190333432',
+        dSKFtag:'?ftag=ACQ-07-10abg1d',
+        mOBFtag: '?ftag=ACQ-07-10abg1e',
+        adSetADBU: '24/7 Sports',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:438537202888273',
+        iGMOBftag:'?ftag=ACQ-07-10abf2d'
+    },
+    {
+        facebookPageUniqueLookup : 'Chowhound',
+        adAccountId: 'ac:10153188952138997',
+        adAccountName: 'Chowhound Audience Development',
+        displayLink: 'Chowhound.com',
+        relatedPage: 'o:32145209819',
+        dSKFtag:'?ftag=ACQ611e676',
+        mOBFtag: '?ftag=ACQ-07-10aac9e',
+        adSetADBU: 'Chowhound',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:131307633709003',
+        iGMOBftag:'?ftag=ACQ-07-10abf1j'
+    },
+    {
+        facebookPageUniqueLookup : 'CNET',
+        adAccountId: 'ac:10152556302918997',
+        adAccountName: 'CNET Audience Development V1',
+        displayLink: 'CNET.com',
+        relatedPage: 'o:7155422274',
+        dSKFtag:'?ftag=ACQ9265a8a',
+        mOBFtag: '?ftag=ACQb4020c1',
+        adSetADBU: 'CNET',
+        paidInitiativeADInitiative: '',
+        excludedConnections: 'c:145802748959745,c:7155422274',
+        excludedCountries: '',
+        notes: 'Exclude CNET and CNET ES FANS',
+        instagramAccountID:'o:419235841503590',
+        iGMOBftag:'?ftag=ACQ-07-10aca9f'
+    },
+    {
+        facebookPageUniqueLookup : 'ComicBook',
+        adAccountId: 'ac:1102941909874497',
+        adAccountName: 'ComicBook Audience Development',
+        displayLink: 'ComicBook.com',
+        relatedPage: 'o:39795225543',
+        dSKFtag:'?ftag=ACQ-07-10abi3g&ttag=FB_DSK_Comicbook_AD&utm_source=Facebook&utm_campaign=Comicbook_AD',
+        mOBFtag: '?ftag=ACQ-07-10abi3h&ttag=FB_MOB_Comicbook_AD&utm_source=Facebook_Mobile&utm_campaign=Comicbook_AD',
+        adSetADBU: 'ComicBook',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'',
+        iGMOBftag:''
+    },
+    {
+        facebookPageUniqueLookup : 'ET Online',
+        adAccountId: 'ac:10155427397453997',
+        adAccountName: 'ET Online Audience Development',
+        displayLink:  'ETOnline.com',
+        relatedPage: 'o:106843036179',
+        dSKFtag:  '?ftag=ACQ-07-10aag9f',
+        mOBFtag: '?ftag=ACQ-07-10aag9g',
+        adSetADBU: 'ET Online',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:160937990721150',	
+        iGMOBftag:'?ftag=ACQ-07-10abf2e'
+    },
+    {
+        facebookPageUniqueLookup : 'Gamespot',
+        adAccountId: 'ac:10152371526218997',
+        adAccountName: 'Gamespot Audience Development V1',
+        displayLink: 'GameSpot.com',
+        relatedPage:  'o:13892765435',
+        dSKFtag: '?ftag=ACQa2186e3',
+        mOBFtag: '?ftag=ACQ-07-10aae5e',
+        adSetADBU: 'Gamespot',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'',
+        iGMOBftag:''
+    },
+    {
+        facebookPageUniqueLookup : 'Inside Edition',
+        adAccountId: 'ac:10155397886108997',
+        adAccountName: 'Inside Edition Aud Dev',
+        displayLink: 'InsideEdition.com',
+        relatedPage: 'o:71728150722',
+        dSKFtag:'?ftag=ACQ-07-10abe8j',
+        mOBFtag: '?ftag=ACQ-07-10abe9a',
+        adSetADBU: 'Inside Edition',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:955399184516502',	
+        iGMOBftag:'?ftag=ACQ-07-10abf2f'
+    },
+    {
+        facebookPageUniqueLookup : 'PopCulture',
+        adAccountId: 'ac:283794938923232',
+        adAccountName: 'PopCulture Audience Development',
+        displayLink: 'PopCulture.com',
+        relatedPage: 'o:225096980839858',
+        dSKFtag:'?ftag=ACQ-07-10abi3e&ttag=FB_DSK_Popculture_AD&utm_source=Facebook&utm_campaign=Popculture_AD',
+        mOBFtag: '?ftag=ACQ-07-10abi3f&ttag=FB_MOB_Popculture_AD&utm_source=Facebook_Mobile & utm_campaign=Popculture_AD',
+        adSetADBU: 'PopCulture',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'',
+        iGMOBftag:''
+    },
+    {
+        facebookPageUniqueLookup : 'TVGuide',
+        adAccountId:  'ac:295140667330998',
+        adAccountName: 'TVGuide Audience Development',
+        displayLink: 'TVGuide.com',
+        relatedPage: 'o:80415657792',
+        dSKFtag: '?ftag=ACQ568ec48',
+        mOBFtag: '?ftag=ACQ58c84e2',
+        adSetADBU: 'TV Guide',
+        paidInitiativeADInitiative: '',
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:520120211362841',	
+        iGMOBftag:'?ftag=ACQ-07-10abf2a'
+    },
+    {
+        facebookPageUniqueLookup : 'The Guide',
+        adAccountId: 'ac:10155283134198997',
+        adAccountName: 'Guide Aud Dev v2',
+        displayLink: 'Guide.com',
+        relatedPage: 'o:1800547170168104',
+        dSKFtag:'?ftag=ACQ-07-10aaj7d',
+        mOBFtag: '?ftag=ACQ-07-10aaj7e',
+        adSetADBU: 'Guide',
+        paidInitiativeADInitiative: '', 	
+        excludedConnections: '',
+        excludedCountries: '',
+        notes: '',
+        instagramAccountID:'o:1343680545724693',
+        iGMOBftag:'?ftag=ACQ-07-10aca9a'
+    },
+
 ]
 
-export  {ACCOUNTS};
+export  {ACCOUNTS}
