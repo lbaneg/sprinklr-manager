@@ -236,7 +236,7 @@ class Bids extends React.Component {
               <div style={{float:'rigth',width:'500px',height:'50px'}}>
 
                     <Button variant="primary" style={{float:'left'}} size="sm" onClick={this.onNew}>
-                     <IoMdCreate/> New
+                     <IoMdCreate/> Create
                     </Button>
                     <Button variant="warning" style={{float:"rigth",marginLeft:'10px'}} onClick={this.onEdit} size="sm" disabled={this.state.selectCount === 1?false:true}>
                       <IoMdOpen/> Edit

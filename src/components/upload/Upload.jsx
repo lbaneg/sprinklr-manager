@@ -8,8 +8,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import './Upload.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { IoIosCreate } from 'react-icons/io';
-import {IoIosCloudDownload} from 'react-icons/io';
+import {IoIosCloudDownload,IoIosCloseCircleOutline,IoIosCreate} from 'react-icons/io';
 import CSVReader from 'react-csv-reader';
 import { CSVLink } from "react-csv";
 import {HEADERVALUES} from '../../data/header-values';
@@ -68,7 +67,8 @@ class Upload extends React.Component {
       activeTargets:0,
       bids:[],
       isInstagramable:false,
-      isInstagramStoryable:false
+      isInstagramStoryable:false,
+      errorMessage:''
     }
     this._loadBids = this._loadBids.bind(this);
     this.onRemoveFile = this.onRemoveFile.bind(this);
@@ -77,6 +77,7 @@ class Upload extends React.Component {
     this.loadAudianceTargetResp = this.loadAudianceTargetResp.bind(this);
     this.onIGSelect = this.onIGSelect.bind(this);
     this.onIGStorySelect = this.onIGStorySelect.bind(this);
+    this.onCloseError = this.onCloseError.bind(this);
   }
   componentDidMount() {
     window.ipcRenderer.on(this.message.LOADAUDR, this.loadAudianceTargetResp)
@@ -87,6 +88,9 @@ class Upload extends React.Component {
   componentWillUnmount() {
     window.ipcRenderer.removeListener(this.message.LOADAUDR, this.loadAudianceTargetResp);
     window.ipcRenderer.removeListener(this.message.LOADBIDSRESP, this._loadBids);
+  }
+  onCloseError(){
+    this.setState({errorMessage:''});
   }
   _loadBids(event,res){
     this.setState({bids:res});
@@ -133,6 +137,10 @@ class Upload extends React.Component {
     const audianceTargets = audiances.filter(elm=>{
         return elm.site === site;
     })
+    if(audianceTargets.length <= 0){
+      this.setState({errorMessage:`No audiance found for ${site}; Check the Audiance section and create or edit a audiance for site ${site}`});
+      return
+    }
     for(let bid of this.state.bids){ 
       if(bid.vendor === 'Instagram' && bid.site === site) this.setState({isInstagramable:true})
     }
@@ -168,7 +176,10 @@ class Upload extends React.Component {
           break;
         }
     }
-    if(bid === undefined) return {} //ERROR CHECK;
+    if(bid === undefined){
+      this.setState({errorMessage:`No bids found for site ${campaign.facebookPage}; check if the Bid tab has bid values for site ${campaign.facebookPage}`})
+      return 
+    } 
     let device;
     switch(accountType){ 
       case this.state.accountType.FACEBOOK:
@@ -184,6 +195,10 @@ class Upload extends React.Component {
         device = new InstagramStory(campaign.facebookPage,bid);
         break;
      default:
+    }
+    if(device === undefined){
+      this.setState({errorMessage:`Account type not found as Facebook,Facebook Mobile,Instagram or Instagram Story`});
+      return 
     }
     const account = this.state.accountFactory.getAccount(campaign.facebookPage);
     const creativ = new Creative(device,account,audiance,campaign);
@@ -224,7 +239,6 @@ class Upload extends React.Component {
 
   render() {
     const csvData = this.state.csvData;
-    const errorMessage = 'Format Error! First row in file must match: LINE NUMBER,	DATE ADDED,	FACEBOOK PAGE,	HEADLINE,	DESCRIPTION (DEK)	BODY -  BLURB,	LIVE URL,	FACEBOOK IMAGE - 1200 X 627';
     return (
       <section className="page" id="upload-page">
         <Container fluid={true} >
@@ -237,7 +251,7 @@ class Upload extends React.Component {
           <Row>
             <Col xs={12} md={12} lg ={12}>
               {
-                 this.state.error? <Alert variant={'danger'}>{errorMessage}</Alert>:''  
+                 this.state.errorMessage.length>1? <Alert variant={'danger'}>{this.state.errorMessage} <IoIosCloseCircleOutline onClick={this.onCloseError}/></Alert>:''  
               }
             </Col>
           </Row>
@@ -262,7 +276,7 @@ class Upload extends React.Component {
           <Row style={{marginTop:'30px'}}>
             <Col xs={6} md={6} lg={6}>
                 {
-                  this.state.site?(
+                  this.state.audianceTargets.length > 0 ?(
                     <Col xs={10} md={10} lg={10}>
                     <div style={{width:'100%',height:'30px'}}>
                     <h6 style={{float:'left'}}>Select Audiance Targets for {this.state.site}</h6>
