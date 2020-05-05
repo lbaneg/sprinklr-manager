@@ -114,13 +114,18 @@ class Upload extends React.Component {
     this._createCampaigns(data);
   }
   onCreateExportFile(){
-    this._createUpload(this.state.bidType.DESKTOP,this.state.accountType.FACEBOOK);
-    this._createUpload(this.state.bidType.MOBILE,this.state.accountType.FACEBOOKMOBILE);
-    if(this.state.uploadIG) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAM);
-    if(this.state.uploadIGStory) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAMSTORY);
-    this._nameExportFile();
-    this.setState({exportFileComplet:true});
-    window.ipcRenderer.send(this.message.INSERTUPLOAD,this.state.inputFile);
+    try{
+      this._createUpload(this.state.bidType.DESKTOP,this.state.accountType.FACEBOOK);
+      this._createUpload(this.state.bidType.MOBILE,this.state.accountType.FACEBOOKMOBILE);
+      if(this.state.uploadIG) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAM);
+      if(this.state.uploadIGStory) this._createUpload(this.state.bidType.INSTAGRAM,this.state.accountType.INSTAGRAMSTORY);
+      this._nameExportFile();
+      this.setState({exportFileComplet:true});
+      window.ipcRenderer.send(this.message.INSERTUPLOAD,this.state.inputFile);
+    }catch(err){
+      this.setState({errorMessage:err.message});
+    }
+ 
   }
   _nameExportFile(){
     let campaign = this.state.campaigns[0];
@@ -130,7 +135,8 @@ class Upload extends React.Component {
     let campaigns = [];
     const audiances = this.state.audiances;
     for (const row of data) {
-      campaigns.push(new Campaign(...row)); //data[row][0] checks that the elem has a line number property.
+      if(row[0].lineNumber <= 0 || row.length < 8) break;//data[row][0] checks that the elem has a line number property.
+      campaigns.push(new Campaign(...row)); 
     }
     const site = campaigns[0].facebookPage;
     this.setState({site:site}); // NEED TO CHECK ALL SITE NAME ARE THE SAME;
@@ -156,19 +162,21 @@ class Upload extends React.Component {
         return elm.selected === true; 
       })
       for(let i =0; i < audiance.length;i++){
-         let props = this._setProps(campaign,bidType,accountType,audiance[i]);//bidtype accounttype
-         this.setState(state => {
-          const list = state.csvData.push(props);
-          return {list};
-        });
+        try{
+          let props = this._setProps(campaign,bidType,accountType,audiance[i]);//bidtype accounttype
+            this.setState(state => {
+            const list = state.csvData.push(props);
+            return {list};
+          });
+        }catch(err){
+          console.log(err);
+          throw err;
+        }
       }
     }
   }
   _setProps(campaign,bidType,accountType,audiance){//should be named createUploadTemplate
     
-    // const bid = this.state.bids.filter((elm)=>{
-    //   return (elm.site === campaign.facebookPage && elm.platform === type);
-    // }).shift();
     let bid;
     for(let elm of this.state.bids){
         if(elm.site === campaign.facebookPage && elm.vendor === bidType){
@@ -177,8 +185,7 @@ class Upload extends React.Component {
         }
     }
     if(bid === undefined){
-      this.setState({errorMessage:`No bids found for site ${campaign.facebookPage}; check if the Bid tab has bid values for site ${campaign.facebookPage}`})
-      return 
+      throw new Error(`No bids found for site ${campaign.facebookPage}, check if the Bid section has a bid value for site ${campaign.facebookPage}`); 
     } 
     let device;
     switch(accountType){ 
@@ -197,8 +204,7 @@ class Upload extends React.Component {
      default:
     }
     if(device === undefined){
-      this.setState({errorMessage:`Account type not found as Facebook,Facebook Mobile,Instagram or Instagram Story`});
-      return 
+      throw new Error(`Account type not found as Facebook,Facebook Mobile,Instagram or Instagram Story`); 
     }
     const account = this.state.accountFactory.getAccount(campaign.facebookPage);
     const creativ = new Creative(device,account,audiance,campaign);
