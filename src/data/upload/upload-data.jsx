@@ -391,7 +391,7 @@ const INSTAGRAMSTORY = {
     dcmEnabled:'false',
     dcmSetViewTags:'false',
     adSetDeliveryLocation:'Mobile',
-    paidInitiativeADDeliveryLocation:'Instagram Mobile Feed',
+    paidInitiativeADDeliveryLocation:'Instagram Mobile',
     campaignBuyingType:'Auction',
     postApproval:'FALSE',
     useAcceleratedDelivery:'Yes',
